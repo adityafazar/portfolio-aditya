@@ -1,0 +1,608 @@
+@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #EDE8E0;
+  --foreground: #1A1A1A;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #EDE8E0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--foreground);
+  background-color: #EDE8E0;
+  font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Native Figma CAP_HEIGHT leading trim in modern Chromium & WebKit */
+.cap-trim {
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+/* Custom subtle Blender-style scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #E4DFD5;
+}
+::-webkit-scrollbar-thumb {
+  background: #ACA598;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #857E71;
+}
+
+/* =========================================================================
+   Interactive Hover Feedback & Micro-Interactions
+   ========================================================================= */
+
+/* 1. Action Links (Watch Video Buttons, Socials) */
+.figma-action-link {
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), filter 220ms ease;
+  transform-origin: center center;
+}
+.figma-action-link:hover {
+  transform: translateY(-3px) scale(1.025);
+  filter: brightness(1.08) drop-shadow(0 8px 16px rgba(219, 95, 45, 0.42));
+}
+.figma-action-link:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+/* 2. Lightbox Preview Trigger (Images, UI/UX screens, 3D viewport frames) */
+.figma-lightbox-trigger {
+  cursor: zoom-in;
+}
+
+.figma-lightbox-trigger .figma-interactive-inner {
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), filter 320ms ease;
+  transform-origin: center center;
+}
+
+.figma-lightbox-trigger:hover .figma-interactive-inner {
+  transform: scale(1.03) translateY(-6px);
+  filter: drop-shadow(0 20px 36px rgba(0, 0, 0, 0.28));
+}
+
+.figma-lightbox-trigger .figma-img-target {
+  transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1), filter 360ms ease;
+  transform-origin: center center;
+}
+
+.figma-lightbox-trigger:hover .figma-img-target {
+  transform: scale(1.04);
+  filter: brightness(1.05) contrast(1.02);
+}
+
+/* 3. 3D Floating Cutout Interactions (Stormtrooper, Lancer, Submarine, Knight, Horse, etc.) */
+.figma-3d-cutout-trigger {
+  user-select: none;
+}
+.figma-3d-cutout-trigger .figma-cutout-inner {
+  transition: transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 380ms ease;
+  transform-origin: center bottom;
+}
+.figma-3d-cutout-trigger:hover .figma-cutout-inner {
+  transform: translateY(-10px) scale(1.045);
+  filter: drop-shadow(0 20px 28px rgba(0, 0, 0, 0.28));
+}
+
+/* 4. Interactive Heading Badges (Playful Hover Rotation & Spring Pop) */
+.figma-title-badge {
+  cursor: pointer;
+  user-select: none;
+  transform-origin: center center;
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.figma-title-badge-rot-neg:hover,
+.figma-title-badge-active-neg {
+  transform: rotate(-1.4deg) scale(1.025) translateY(-3px);
+}
+
+.figma-title-badge-rot-pos:hover,
+.figma-title-badge-active-pos {
+  transform: rotate(1.4deg) scale(1.025) translateY(-3px);
+}
+
+.figma-title-badge:active {
+  transform: scale(0.98) translateY(0px) rotate(0deg);
+  transition-duration: 100ms;
+}
+
+/* 5. Hero Subtitle Badge ("3D, Design & UI UX") - Anchored neat micro-lift without tilt */
+.figma-hero-subtitle-badge {
+  cursor: pointer;
+  user-select: none;
+  transform-origin: center center;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), filter 260ms ease;
+  will-change: transform;
+}
+
+.figma-hero-subtitle-badge:hover {
+  transform: scale(1.015) translateY(-2px);
+  filter: brightness(1.04);
+}
+
+.figma-hero-subtitle-badge:active {
+  transform: scale(0.99) translateY(0px);
+}
+
+/* 6. Blender XYZ Axis Gizmo Easter Egg */
+.figma-gizmo-trigger {
+  transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center center;
+}
+.figma-gizmo-trigger:hover {
+  transform: scale(1.15);
+}
+
+/* =========================================================================
+   Hero Ambient Looping Animations (Options 1, 2, 3, 5)
+   ========================================================================= */
+
+/* 1. Marching Ants Selection Box Loop (Portfolio Dashed Border) */
+@keyframes figmaMarchingAnts {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -56px;
+  }
+}
+
+.figma-marching-ants {
+  animation: figmaMarchingAnts 1.6s linear infinite;
+}
+
+/* 2. Blender XYZ Axis Gizmo Continuous Slow Rotation */
+@keyframes figmaGizmoSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.figma-gizmo-spin {
+  animation: figmaGizmoSpin 16s linear infinite;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* 3. Hero ID Card & Lanyard Physical Pendulum Swing */
+@keyframes figmaLanyardSwing {
+  0% {
+    transform: rotate(-1.2deg) translateY(0px);
+  }
+  50% {
+    transform: rotate(1.2deg) translateY(-4px);
+  }
+  100% {
+    transform: rotate(-1.2deg) translateY(0px);
+  }
+}
+
+.figma-lanyard-pendulum {
+  transform-origin: 52% 4%;
+  animation: figmaLanyardSwing 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform;
+}
+
+.figma-lanyard-pendulum .figma-lanyard-inner {
+  transition: transform 340ms cubic-bezier(0.16, 1, 0.3, 1), filter 340ms ease;
+  transform-origin: center center;
+}
+
+.figma-lanyard-pendulum:hover .figma-lanyard-inner {
+  transform: translateY(-8px) scale(1.02);
+  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.22));
+}
+
+.figma-lanyard-pendulum:active .figma-lanyard-inner {
+  transform: translateY(0px) scale(0.99);
+}
+
+/* 5. Blender 3D Cursor Crosshair (Red Dash Ring Spin & Breathing Pulse) */
+@keyframes figmaCursorRingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.figma-3d-cursor-ring {
+  transform-origin: 20px 20px;
+  animation: figmaCursorRingSpin 10s linear infinite;
+  will-change: transform;
+}
+
+@keyframes figmaCursorPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgba(245, 40, 40, 0));
+  }
+  50% {
+    transform: scale(1.09);
+    filter: drop-shadow(0 0 7px rgba(245, 40, 40, 0.5));
+  }
+}
+
+.figma-3d-cursor-pulse {
+  transform-origin: center center;
+  animation: figmaCursorPulse 3.5s ease-in-out infinite;
+  will-change: transform, filter;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.figma-3d-cursor:hover .figma-3d-cursor-pulse {
+  transform: scale(1.24);
+  filter: drop-shadow(0 0 12px rgba(245, 40, 40, 0.8));
+}
+
+/* =========================================================================
+   Theme-Matched macOS Dock Tooltip Pill (Design Blue & 3D Red)
+   ========================================================================= */
+
+.macos-dock-tooltip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 60;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Base pill styling - Neo-brutalist tactile theme */
+.macos-dock-tooltip-pill {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+  padding: 3.5px 10px;
+  color: #FFFFFF;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px 0px #000000;
+  user-select: none;
+}
+
+/* Card 1: Design & Multimedia -> Royal Blue Theme (#4565D6) */
+.macos-dock-tooltip-design .macos-dock-tooltip-pill {
+  background: rgb(69, 101, 214);
+}
+.macos-dock-tooltip-design .macos-dock-tooltip-caret {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgb(69, 101, 214);
+  margin-top: -1px;
+  filter: drop-shadow(1.5px 1.5px 0px #000);
+}
+
+/* Card 2: 3D Design -> Vibrant Red Theme (#DA251C) */
+.macos-dock-tooltip-3d .macos-dock-tooltip-pill {
+  background: rgb(218, 37, 28);
+}
+.macos-dock-tooltip-3d .macos-dock-tooltip-caret {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgb(218, 37, 28);
+  margin-top: -1px;
+  filter: drop-shadow(1.5px 1.5px 0px #000);
+}
+
+@keyframes macosDockBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-14px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.macos-dock-bounce {
+  animation: macosDockBounce 420ms cubic-bezier(0.36, 0, 0.66, -0.56);
+}
+
+/* Working Experience: Interactive Card Elevation & Micro Spring Click */
+@keyframes figmaCardSpringClick {
+  0% {
+    transform: translateY(-4px) scale(1);
+  }
+  35% {
+    transform: translateY(-2px) scale(0.985);
+  }
+  70% {
+    transform: translateY(-6px) scale(1.015);
+  }
+  100% {
+    transform: translateY(-4px) scale(1);
+  }
+}
+
+.figma-card-spring-click {
+  animation: figmaCardSpringClick 380ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* 4. Working Experience Looping Animations */
+
+/* 4.1 Option 1: Vertical 2022 x 2026 Guideline Marching Ants Flow */
+@keyframes figmaTimelineMarchingAnts {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 40px;
+  }
+}
+
+.figma-timeline-marching-ants {
+  animation: figmaTimelineMarchingAnts 1.2s linear infinite;
+}
+
+/* 4.2 Option 2: Active Timeline Beacon - Radar Pulse Ping on Yellow Node (Agu 2026 - Sekarang) */
+@keyframes figmaRadarPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  65% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.figma-radar-ping-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  pointer-events: none;
+  background-color: rgba(224, 218, 23, 0.35);
+  border: 2.5px solid rgba(224, 218, 23, 0.9);
+  box-shadow: 0 0 10px rgba(224, 218, 23, 0.6);
+  transform-origin: center center;
+}
+
+.figma-radar-ring-1 {
+  animation: figmaRadarPing 2.4s cubic-bezier(0.1, 0.2, 0.3, 1) infinite;
+}
+
+.figma-radar-ring-2 {
+  animation: figmaRadarPing 2.4s cubic-bezier(0.1, 0.2, 0.3, 1) 1.2s infinite;
+}
+
+/* 4.3 Floating / Click Animation on Black Mouse Cursor (347:949) */
+@keyframes figmaCursorFloatClick {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  20% {
+    transform: translate(-3px, -4px) scale(1);
+  }
+  40% {
+    transform: translate(-1px, -2px) scale(1);
+  }
+  55% {
+    transform: translate(-4px, -5px) scale(1);
+  }
+  70% {
+    transform: translate(-2px, -3px) scale(1);
+  }
+  /* Realistic Mouse Click Action */
+  82% {
+    transform: translate(-2px, -3px) scale(1);
+  }
+  85% {
+    transform: translate(-1px, -1px) scale(0.86);
+  }
+  88% {
+    transform: translate(-2px, -3px) scale(1.04);
+  }
+  92% {
+    transform: translate(-2px, -3px) scale(1);
+  }
+}
+
+.figma-cursor-float-click {
+  animation: figmaCursorFloatClick 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: 0 0;
+  cursor: pointer;
+  pointer-events: auto !important;
+  transition: filter 0.2s ease;
+}
+
+.figma-cursor-float-click:hover {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+}
+
+.figma-cursor-float-click:active {
+  transform: scale(0.85) !important;
+}
+
+@keyframes figmaCursorClickRipple {
+  0%, 82% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  85% {
+    transform: scale(0.3);
+    opacity: 0.9;
+  }
+  94% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.figma-cursor-click-ripple {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 2px solid rgba(12, 140, 233, 0.85);
+  background-color: rgba(12, 140, 233, 0.2);
+  animation: figmaCursorClickRipple 4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  transform-origin: center center;
+}
+
+/* 5. UI/UX Intro: 4 Mockups Cluster Elegant Synchronized Rotation */
+@keyframes figmaUiuxClusterRotate {
+  0% {
+    transform: rotate(-2.8deg) translateY(-6px);
+  }
+  50% {
+    transform: rotate(2.8deg) translateY(6px);
+  }
+  100% {
+    transform: rotate(-2.8deg) translateY(-6px);
+  }
+}
+
+.figma-uiux-cluster-float-rotate {
+  animation: figmaUiuxClusterRotate 7s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  transform-origin: center center;
+  will-change: transform;
+  transition: filter 0.3s ease;
+}
+
+.figma-uiux-cluster-float-rotate:hover {
+  animation-play-state: paused;
+}
+
+/* 6. AR Warship Submarine Deep-Sea Maneuver Animation (2cdc3943f8d30bbfc8d69cbb3469dc6991da2f75.webp) */
+@keyframes figmaSubmarineManeuver {
+  0% {
+    transform: translate3d(0px, 0px, 0) rotate(0deg);
+    filter: drop-shadow(0 14px 24px rgba(0, 32, 65, 0.30));
+  }
+  18% {
+    /* Diving into deeper trench: nose tilts down, forward surge */
+    transform: translate3d(16px, 14px, 0) rotate(-2.4deg);
+    filter: drop-shadow(0 28px 42px rgba(0, 22, 52, 0.48));
+  }
+  40% {
+    /* Leveling out at depth, cruising through underwater current */
+    transform: translate3d(26px, 6px, 0) rotate(-0.6deg);
+    filter: drop-shadow(0 24px 36px rgba(0, 26, 60, 0.42));
+  }
+  62% {
+    /* Surfacing ascent: nose tilts up, gentle buoyancy climb */
+    transform: translate3d(10px, -15px, 0) rotate(3deg);
+    filter: drop-shadow(0 12px 20px rgba(0, 38, 80, 0.26));
+  }
+  82% {
+    /* Cresting oceanic swell: eases back, trimming attitude angle */
+    transform: translate3d(-10px, -6px, 0) rotate(1.2deg);
+    filter: drop-shadow(0 16px 26px rgba(0, 32, 68, 0.32));
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0) rotate(0deg);
+    filter: drop-shadow(0 14px 24px rgba(0, 32, 65, 0.30));
+  }
+}
+
+.figma-submarine-maneuver {
+  animation: figmaSubmarineManeuver 10s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  transform-origin: 48% 54%;
+  will-change: transform, filter;
+  transition: filter 0.3s ease;
+}
+
+.figma-submarine-trigger:hover .figma-submarine-maneuver,
+.figma-submarine-maneuver:hover {
+  animation-play-state: paused;
+  filter: drop-shadow(0 32px 52px rgba(0, 40, 85, 0.60)) brightness(1.05);
+}
+
+.figma-submarine-trigger .figma-interactive-inner {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.figma-submarine-trigger:hover .figma-interactive-inner {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.figma-submarine-trigger:hover .figma-img-target {
+  transform: none !important;
+}
+
+/* 7. Browser Window Header & Desktop Frame Bar (Page 1: Hero, Page 2: UI/UX, Page 3: 3D) */
+.figma-window-header {
+  transition: box-shadow 0.25s ease, filter 0.25s ease;
+}
+.figma-window-header:hover {
+  box-shadow: 0 -22px 48px rgba(0, 0, 0, 0.13), 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+.figma-window-tab-active {
+  position: relative;
+}
+.figma-window-tab-active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-color: #FFFCF6;
+  z-index: 12;
+}
+
+/* Disable continuous GPU compositing layers on mobile/touch screens to prevent iOS Safari WebKit memory crash */
+@media (max-width: 768px) {
+  .figma-title-badge,
+  .figma-hero-subtitle-badge,
+  .figma-gizmo-spin,
+  .figma-lanyard-pendulum,
+  .figma-3d-cursor-ring,
+  .figma-3d-cursor-pulse,
+  .figma-uiux-cluster-float-rotate,
+  .figma-submarine-maneuver {
+    will-change: auto !important;
+  }
+}
