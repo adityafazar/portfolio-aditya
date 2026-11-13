@@ -27,6 +27,8 @@ import {
   DOCK_APP_METADATA,
 } from "@/data/portfolioData";
 import { TerrainCanvas } from "@/components/ui/TerrainCanvas";
+import { LazyVideo } from "@/components/ui/LazyVideo";
+import { PortfolioPreloader } from "@/components/ui/PortfolioPreloader";
 
 interface GridLine {
   x1: number;
@@ -1151,12 +1153,14 @@ const SceneNodeView = memo(function SceneNodeView({
   hoveredWeaveGroup,
   onHoverWeaveGroup,
   onScrollToSection,
+  eager = false,
 }: {
   node: SceneNode;
   onOpenLightbox: (src: string, title?: string) => void;
   hoveredWeaveGroup?: string | null;
   onHoverWeaveGroup?: (group: string | null) => void;
   onScrollToSection?: (targetY: number) => void;
+  eager?: boolean;
 }) {
   // User requested deletion of cursor & caret at Hero Short Description (347:1115, 347:1116, 347:1117, 347:1118)
   if (
@@ -1212,6 +1216,7 @@ const SceneNodeView = memo(function SceneNodeView({
             hoveredWeaveGroup={hoveredWeaveGroup}
             onHoverWeaveGroup={onHoverWeaveGroup}
             onScrollToSection={onScrollToSection}
+            eager={eager}
           />
         ))}
         {node.lines && node.lines.length > 0 && (
@@ -1251,7 +1256,8 @@ const SceneNodeView = memo(function SceneNodeView({
         src={node.src}
         alt={node.alt || ""}
         draggable={false}
-        loading="lazy"
+        loading={eager ? "eager" : "lazy"}
+        fetchPriority={eager ? "high" : undefined}
         decoding="async"
         style={{
           width: "100%",
@@ -1857,17 +1863,12 @@ const SceneNodeView = memo(function SceneNodeView({
 
             if (isVideo) {
               return (
-                <video
+                <LazyVideo
                   key={idx}
                   src={im.src}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+                  borderRadius={node.br}
+                  label={node.name || "Loading 3D preview..."}
                   style={{
-                    borderRadius: node.br,
                     opacity: im.op,
                     transform: mirrorTransform,
                   }}
@@ -1883,7 +1884,8 @@ const SceneNodeView = memo(function SceneNodeView({
                   src={im.src}
                   alt={node.name || ""}
                   draggable={false}
-                  loading="lazy"
+                  loading={eager ? "eager" : "lazy"}
+                  fetchPriority={eager ? "high" : undefined}
                   decoding="async"
                   className={node.lb ? "figma-img-target" : isCutout ? "figma-cutout-img" : undefined}
                   style={{
@@ -1906,7 +1908,8 @@ const SceneNodeView = memo(function SceneNodeView({
                 src={im.src}
                 alt={node.name || ""}
                 draggable={false}
-                loading="lazy"
+                loading={eager ? "eager" : "lazy"}
+                fetchPriority={eager ? "high" : undefined}
                 decoding="async"
                 className={node.lb ? "figma-img-target" : isCutout ? "figma-cutout-img" : undefined}
                 style={{
@@ -1939,6 +1942,7 @@ const SceneNodeView = memo(function SceneNodeView({
           hoveredWeaveGroup={hoveredWeaveGroup}
           onHoverWeaveGroup={onHoverWeaveGroup}
           onScrollToSection={onScrollToSection}
+          eager={eager}
         />
       ))}
 
@@ -2826,271 +2830,105 @@ function HeroLeftToolbar({
   );
 }
 
-const LancerVideoWindow = memo(function LancerVideoWindow({
-  onOpenLightbox,
-}: {
-  onOpenLightbox: (src: string, title?: string) => void;
-}) {
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label="Perbesar video Lancer Evo IX 3D Model"
-      onClick={() => onOpenLightbox("/render.mp4", "Lancer Evo IX 3D Model & Animation")}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ")
-          onOpenLightbox("/render.mp4", "Lancer Evo IX 3D Model & Animation");
-      }}
-      className="figma-lightbox-trigger absolute cursor-zoom-in overflow-hidden rounded-[25px] select-none"
-      style={{
-        left: 1014,
-        top: 7954.46,
-        width: 850.27,
-        height: 538.36,
-        zIndex: 10,
-        backgroundColor: "#000",
-      }}
-    >
-      <video
-        src="/render.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="h-full w-full object-cover select-none pointer-events-none"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          borderRadius: 25,
-        }}
-      />
-      <MockupWindowHeader
-        title="Lancer Evo IX 3D Model"
-        width="100%"
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          zIndex: 20,
-        }}
-      />
-    </div>
-  );
-});
+interface VideoWindowConfig {
+  videoSrc: string;
+  title: string;
+  lightboxTitle: string;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  zIndex: number;
+}
 
-const LancerMiddleVideoWindow = memo(function LancerMiddleVideoWindow({
-  onOpenLightbox,
-}: {
-  onOpenLightbox: (src: string, title?: string) => void;
-}) {
-  const videoSrc = "/figma/render 2.mp4";
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label="Perbesar video Lancer Evo IX 3D Model"
-      onClick={() => onOpenLightbox(videoSrc, "Lancer Evo IX 3D Model")}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ")
-          onOpenLightbox(videoSrc, "Lancer Evo IX 3D Model");
-      }}
-      className="figma-lightbox-trigger absolute cursor-zoom-in overflow-hidden rounded-[25px] select-none"
-      style={{
-        left: 221.75,
-        top: 8059,
-        width: 648.34,
-        height: 410.5,
-        zIndex: 4,
-        backgroundColor: "#000",
-      }}
-    >
-      <video
-        src={videoSrc}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="h-full w-full object-cover select-none pointer-events-none"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          borderRadius: 25,
-        }}
-      />
-      <MockupWindowHeader
-        title="Lancer Evo IX 3D Model"
-        width="100%"
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          zIndex: 20,
-        }}
-      />
-    </div>
-  );
-});
+const VIDEO_WINDOW_CONFIGS: Record<string, VideoWindowConfig> = {
+  "347:2594": {
+    videoSrc: "/figma/render 2.mp4",
+    title: "Lancer Evo IX 3D Model",
+    lightboxTitle: "Lancer Evo IX 3D Model",
+    left: 221.75,
+    top: 8059,
+    width: 648.34,
+    height: 410.5,
+    zIndex: 4,
+  },
+  "347:2660": {
+    videoSrc: "/render.mp4",
+    title: "Lancer Evo IX 3D Model",
+    lightboxTitle: "Lancer Evo IX 3D Model & Animation",
+    left: 1014,
+    top: 7954.46,
+    width: 850.27,
+    height: 538.36,
+    zIndex: 10,
+  },
+  "347:1616": {
+    videoSrc: "/figma/0001-0434.mp4",
+    title: "3D Animation Short Film",
+    lightboxTitle: "3D Animation Short Film",
+    left: 55,
+    top: 4487.75,
+    width: 1134,
+    height: 718,
+    zIndex: 5,
+  },
+  "347:2550": {
+    videoSrc:
+      "/AQMWOdwGKuEVaV9CEDgR-3C6WQKKlcSUO7Buyu6fZHuJhh_7TUe8YicZ7KaZzOiXsB-1a8MQe1dVlYhoOn0gOQl2Z-vMPKSJk_-hkgw.mp4",
+    title: "3D Animation Unreal",
+    lightboxTitle: "3D Animation Unreal",
+    left: 55,
+    top: 6671,
+    width: 1134,
+    height: 718,
+    zIndex: 5,
+  },
+  "347:2682": {
+    videoSrc: "/figma/all render.mp4",
+    title: "3D Car & Environment Animation",
+    lightboxTitle: "3D Car & Environment Animation",
+    left: 1014,
+    top: 9059.46,
+    width: 850.27,
+    height: 538.36,
+    zIndex: 10,
+  },
+};
 
-const BattlefieldVideoWindow = memo(function BattlefieldVideoWindow({
+const VideoMockupWindow = memo(function VideoMockupWindow({
+  config,
   onOpenLightbox,
 }: {
+  config: VideoWindowConfig;
   onOpenLightbox: (src: string, title?: string) => void;
 }) {
-  const videoSrc = "/figma/0001-0434.mp4";
-  const title = "3D Animation Short Film";
   return (
     <div
       role="button"
       tabIndex={0}
-      aria-label="Perbesar video 3D Animation Short Film"
-      onClick={() => onOpenLightbox(videoSrc, title)}
+      aria-label={`Perbesar video ${config.title}`}
+      onClick={() => onOpenLightbox(config.videoSrc, config.lightboxTitle)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ")
-          onOpenLightbox(videoSrc, title);
+          onOpenLightbox(config.videoSrc, config.lightboxTitle);
       }}
       className="figma-lightbox-trigger absolute cursor-zoom-in overflow-hidden rounded-[25px] select-none"
       style={{
-        left: 55,
-        top: 4487.75,
-        width: 1134,
-        height: 718,
-        zIndex: 5,
-        backgroundColor: "#000",
+        left: config.left,
+        top: config.top,
+        width: config.width,
+        height: config.height,
+        zIndex: config.zIndex,
+        backgroundColor: "#171614",
       }}
     >
-      <video
-        src={videoSrc}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="h-full w-full object-cover select-none pointer-events-none"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          borderRadius: 25,
-        }}
+      <LazyVideo
+        src={config.videoSrc}
+        borderRadius={25}
+        label={`Memuat ${config.title}...`}
       />
       <MockupWindowHeader
-        title={title}
-        width="100%"
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          zIndex: 20,
-        }}
-      />
-    </div>
-  );
-});
-
-const SciFiVideoWindow = memo(function SciFiVideoWindow({
-  onOpenLightbox,
-}: {
-  onOpenLightbox: (src: string, title?: string) => void;
-}) {
-  const videoSrc = "/AQMWOdwGKuEVaV9CEDgR-3C6WQKKlcSUO7Buyu6fZHuJhh_7TUe8YicZ7KaZzOiXsB-1a8MQe1dVlYhoOn0gOQl2Z-vMPKSJk_-hkgw.mp4";
-  const title = "3D Animation Unreal";
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label="Perbesar video 3D Animation Unreal"
-      onClick={() => onOpenLightbox(videoSrc, title)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ")
-          onOpenLightbox(videoSrc, title);
-      }}
-      className="figma-lightbox-trigger absolute cursor-zoom-in overflow-hidden rounded-[25px] select-none"
-      style={{
-        left: 55,
-        top: 6671,
-        width: 1134,
-        height: 718,
-        zIndex: 5,
-        backgroundColor: "#000",
-      }}
-    >
-      <video
-        src={videoSrc}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="h-full w-full object-cover select-none pointer-events-none"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          borderRadius: 25,
-        }}
-      />
-      <MockupWindowHeader
-        title={title}
-        width="100%"
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          zIndex: 20,
-        }}
-      />
-    </div>
-  );
-});
-
-const GarageVideoWindow = memo(function GarageVideoWindow({
-  onOpenLightbox,
-}: {
-  onOpenLightbox: (src: string, title?: string) => void;
-}) {
-  const videoSrc = "/figma/all render.mp4";
-  const title = "3D Car & Environment Animation";
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label="Perbesar video 3D Car & Environment Animation"
-      onClick={() => onOpenLightbox(videoSrc, title)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ")
-          onOpenLightbox(videoSrc, title);
-      }}
-      className="figma-lightbox-trigger absolute cursor-zoom-in overflow-hidden rounded-[25px] select-none"
-      style={{
-        left: 1014,
-        top: 9059.46,
-        width: 850.27,
-        height: 538.36,
-        zIndex: 10,
-        backgroundColor: "#000",
-      }}
-    >
-      <video
-        src={videoSrc}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="h-full w-full object-cover select-none pointer-events-none"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          borderRadius: 25,
-        }}
-      />
-      <MockupWindowHeader
-        title={title}
+        title={config.title}
         width="100%"
         style={{
           position: "absolute",
@@ -3287,6 +3125,9 @@ export default function FigmaPortfolioCanvas() {
         backgroundSize: `${Math.max(35, Math.round(70 * scale))}px ${Math.max(35, Math.round(70 * scale))}px`,
       }}
     >
+      {/* Initial Loading Screen */}
+      <PortfolioPreloader canvasMounted={mounted} />
+
       {/* Interactive Terrain Background */}
       <TerrainCanvas />
 
@@ -3365,6 +3206,7 @@ export default function FigmaPortfolioCanvas() {
                     hoveredWeaveGroup={hoveredWeaveGroup}
                     onHoverWeaveGroup={setHoveredWeaveGroup}
                     onScrollToSection={scrollToSection}
+                    eager
                   />
                 );
               }
@@ -3376,6 +3218,7 @@ export default function FigmaPortfolioCanvas() {
                   hoveredWeaveGroup={hoveredWeaveGroup}
                   onHoverWeaveGroup={setHoveredWeaveGroup}
                   onScrollToSection={scrollToSection}
+                  eager
                 />
               );
             })}
@@ -3494,47 +3337,12 @@ export default function FigmaPortfolioCanvas() {
               if (layer.id === "347:1215") {
                 return <ThreeDPalmTree key={layer.id} />;
               }
-              if (layer.id === "347:2594") {
-                // Lancer Evo IX Front/Middle Video Window
+              const videoConfig = VIDEO_WINDOW_CONFIGS[layer.id];
+              if (videoConfig) {
                 return (
-                  <LancerMiddleVideoWindow
+                  <VideoMockupWindow
                     key={layer.id}
-                    onOpenLightbox={handleOpenLightbox}
-                  />
-                );
-              }
-              if (layer.id === "347:2660") {
-                // Lancer Evo IX 3D Animation Video Window
-                return (
-                  <LancerVideoWindow
-                    key={layer.id}
-                    onOpenLightbox={handleOpenLightbox}
-                  />
-                );
-              }
-              if (layer.id === "347:1616") {
-                // 3D Animation Short Film (Battlefield Scene) Video Window
-                return (
-                  <BattlefieldVideoWindow
-                    key={layer.id}
-                    onOpenLightbox={handleOpenLightbox}
-                  />
-                );
-              }
-              if (layer.id === "347:2550") {
-                // 3D Environment Animation (Sci-Fi Unreal) Video Window
-                return (
-                  <SciFiVideoWindow
-                    key={layer.id}
-                    onOpenLightbox={handleOpenLightbox}
-                  />
-                );
-              }
-              if (layer.id === "347:2682") {
-                // 3D Car & Environment Animation (Japanese Garage) Video Window
-                return (
-                  <GarageVideoWindow
-                    key={layer.id}
+                    config={videoConfig}
                     onOpenLightbox={handleOpenLightbox}
                   />
                 );
