@@ -11,9 +11,9 @@ export interface LazyVideoProps {
 }
 
 /**
- * Viewport-aware lazy-loading video player.
- * Defers downloading video bytes until the element approaches the viewport,
- * shows a lightweight loading state while buffering, and pauses when off-screen.
+ * Preloaded & viewport-aware video player.
+ * Buffers initial frames on mount so the preloader can wait until every video is ready,
+ * and automatically plays/pauses based on viewport visibility.
  */
 export const LazyVideo = memo(function LazyVideo({
   src,
@@ -24,30 +24,22 @@ export const LazyVideo = memo(function LazyVideo({
 }: LazyVideoProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
-  // Start loading video when within 900px of viewport; track closer visibility for play/pause
+  // Track visibility in viewport for auto play/pause
   useEffect(() => {
     const el = containerRef.current;
+    const video = videoRef.current;
+    if (video && video.readyState >= 2) {
+      setIsReady(true);
+    }
     if (!el) return;
 
     if (typeof IntersectionObserver === "undefined") {
-      setShouldLoad(true);
       setIsVisible(true);
       return;
     }
-
-    const loadObserver = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setShouldLoad(true);
-          loadObserver.disconnect();
-        }
-      },
-      { rootMargin: "900px 0px" }
-    );
 
     const playObserver = new IntersectionObserver(
       (entries) => {
@@ -56,22 +48,20 @@ export const LazyVideo = memo(function LazyVideo({
           setIsVisible(entry.isIntersecting);
         }
       },
-      { rootMargin: "200px 0px" }
+      { rootMargin: "250px 0px" }
     );
 
-    loadObserver.observe(el);
     playObserver.observe(el);
 
     return () => {
-      loadObserver.disconnect();
       playObserver.disconnect();
     };
   }, []);
 
-  // Automatically play when visible and pause when scrolled far out of view
+  // Automatically play when visible and pause when scrolled out of view
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !shouldLoad) return;
+    if (!video) return;
 
     if (isVisible) {
       const playPromise = video.play();
@@ -83,7 +73,7 @@ export const LazyVideo = memo(function LazyVideo({
     } else if (!video.paused) {
       video.pause();
     }
-  }, [isVisible, shouldLoad, isReady]);
+  }, [isVisible, isReady]);
 
   return (
     <div
@@ -106,12 +96,11 @@ export const LazyVideo = memo(function LazyVideo({
 
       <video
         ref={videoRef}
-        src={shouldLoad ? src : undefined}
-        autoPlay={shouldLoad}
+        src={src}
         loop
         muted
         playsInline
-        preload={shouldLoad ? "auto" : "none"}
+        preload="auto"
         onLoadedData={() => setIsReady(true)}
         onCanPlay={() => setIsReady(true)}
         className={`${className} transition-opacity duration-300 ${
@@ -125,3 +114,4 @@ export const LazyVideo = memo(function LazyVideo({
     </div>
   );
 });
+

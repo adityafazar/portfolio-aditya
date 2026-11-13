@@ -46,7 +46,7 @@ function CroppedImg({
       src={src}
       alt={alt}
       draggable={false}
-      loading="lazy"
+      loading="eager"
       decoding="async"
       className={`absolute max-w-none select-none ${className}`}
       style={{

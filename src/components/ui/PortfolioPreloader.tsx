@@ -7,31 +7,32 @@ interface PortfolioPreloaderProps {
 }
 
 /**
- * Lightweight initial loading screen aligned with the drafting-paper / Blender theme.
- * Smoothly reveals the canvas once hydrated & hero resources settle, with a strict safety timeout.
+ * Full-asset initial loading screen aligned with the drafting-paper / Blender theme.
+ * Waits until all images are loaded and all videos have buffered their initial playback frames
+ * before revealing the interactive portfolio canvas (with a 12s safety fallback).
  */
 export const PortfolioPreloader = memo(function PortfolioPreloader({
   canvasMounted,
 }: PortfolioPreloaderProps) {
-  const [progress, setProgress] = useState(25);
+  const [progress, setProgress] = useState(5);
+  const [loadedCount, setLoadedCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const [shouldUnmount, setShouldUnmount] = useState(false);
 
   useEffect(() => {
-    const startTime = Date.now();
-    const MIN_DISPLAY_MS = 450;
-    const MAX_WAIT_MS = 1400;
+    if (!canvasMounted) return;
 
-    // Gentle progress ramp so user sees immediate feedback
-    const rampTimer = window.setInterval(() => {
-      setProgress((prev) => (prev < 88 ? prev + 9 : prev));
-    }, 110);
+    const startTime = Date.now();
+    const MIN_DISPLAY_MS = 500;
+    const MAX_WAIT_MS = 12000;
 
     let finished = false;
+    const cleanups: Array<() => void> = [];
+
     const finishLoading = () => {
       if (finished) return;
       finished = true;
-      window.clearInterval(rampTimer);
 
       const elapsed = Date.now() - startTime;
       const delay = Math.max(0, MIN_DISPLAY_MS - elapsed);
@@ -41,31 +42,89 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         window.setTimeout(() => {
           setIsDone(true);
           window.setTimeout(() => setShouldUnmount(true), 420);
-        }, 140);
+        }, 180);
       }, delay);
     };
 
-    // Wait for window load + fonts, but never block past MAX_WAIT_MS
+    // Wait 1 animation frame so all canvas nodes (<img /> and <video />) are in the DOM
+    const rafId = window.requestAnimationFrame(() => {
+      const imgs = Array.from(document.querySelectorAll("img"));
+      const videos = Array.from(document.querySelectorAll("video"));
+      const total = imgs.length + videos.length;
+      setTotalCount(total);
+
+      if (total === 0) {
+        finishLoading();
+        return;
+      }
+
+      const failedVideos = new WeakSet<HTMLVideoElement>();
+
+      const evaluateProgress = () => {
+        if (finished) return;
+
+        let ready = 0;
+        for (const img of imgs) {
+          if (img.complete) {
+            ready += 1;
+          }
+        }
+        for (const video of videos) {
+          if (video.readyState >= 2 || Boolean(video.error) || failedVideos.has(video)) {
+            ready += 1;
+          }
+        }
+
+        setLoadedCount(ready);
+        const pct = Math.min(100, Math.max(5, Math.round((ready / total) * 100)));
+        setProgress(pct);
+
+        if (ready >= total) {
+          finishLoading();
+        }
+      };
+
+      for (const img of imgs) {
+        if (!img.complete) {
+          const onImgDone = () => evaluateProgress();
+          img.addEventListener("load", onImgDone, { once: true });
+          img.addEventListener("error", onImgDone, { once: true });
+          cleanups.push(() => {
+            img.removeEventListener("load", onImgDone);
+            img.removeEventListener("error", onImgDone);
+          });
+        }
+      }
+
+      for (const video of videos) {
+        if (video.readyState < 2) {
+          const onVidDone = () => evaluateProgress();
+          const onVidErr = () => {
+            failedVideos.add(video);
+            evaluateProgress();
+          };
+          video.addEventListener("loadeddata", onVidDone, { once: true });
+          video.addEventListener("canplay", onVidDone, { once: true });
+          video.addEventListener("error", onVidErr, { once: true });
+          cleanups.push(() => {
+            video.removeEventListener("loadeddata", onVidDone);
+            video.removeEventListener("canplay", onVidDone);
+            video.removeEventListener("error", onVidErr);
+          });
+        }
+      }
+
+      evaluateProgress();
+      const pollTimer = window.setInterval(evaluateProgress, 150);
+      cleanups.push(() => window.clearInterval(pollTimer));
+    });
+
     const safetyTimer = window.setTimeout(finishLoading, MAX_WAIT_MS);
 
-    const onReadyCheck = () => {
-      if (canvasMounted && document.readyState === "complete") {
-        finishLoading();
-      }
-    };
-
-    if (canvasMounted) {
-      if (document.readyState === "complete") {
-        finishLoading();
-      } else {
-        window.addEventListener("load", onReadyCheck, { once: true });
-      }
-    }
-
     return () => {
-      window.clearInterval(rampTimer);
+      window.cancelAnimationFrame(rafId);
       window.clearTimeout(safetyTimer);
-      window.removeEventListener("load", onReadyCheck);
+      for (const fn of cleanups) fn();
     };
   }, [canvasMounted]);
 
@@ -85,7 +144,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         backgroundSize: "56px 56px",
       }}
     >
-      <div className="mx-4 flex w-full max-w-[340px] flex-col items-center gap-4 rounded-2xl border-[3px] border-black bg-[#FFFDF8] px-6 py-6 shadow-[8px_8px_0px_#000]">
+      <div className="mx-4 flex w-full max-w-[350px] flex-col items-center gap-4 rounded-2xl border-[3px] border-black bg-[#FFFDF8] px-6 py-6 shadow-[8px_8px_0px_#000]">
         {/* Animated badge + Blender icon */}
         <div className="flex items-center gap-3">
           <div className="relative flex h-11 w-11 items-center justify-center rounded-xl border-2 border-black bg-[#4565D6] shadow-[3px_3px_0px_#000]">
@@ -110,7 +169,11 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
             />
           </div>
           <div className="flex items-center justify-between text-[11px] font-semibold text-[#57534E]">
-            <span>Memuat kanvas interaktif...</span>
+            <span>
+              {totalCount > 0
+                ? `Memuat gambar & video (${loadedCount}/${totalCount})...`
+                : "Menyiapkan kanvas..."}
+            </span>
             <span>{progress}%</span>
           </div>
         </div>
@@ -118,3 +181,4 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
     </div>
   );
 });
+
