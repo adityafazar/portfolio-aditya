@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import { CONTACT_ITEMS, SECTIONS } from "@/data/canvasConfig";
 
 function getSectionIcon(id: string): React.ReactNode {
@@ -117,16 +117,6 @@ export const FloatingDocks = memo(function FloatingDocks({
   const [isNavHovered, setIsNavHovered] = useState(false);
   const [isContactHovered, setIsContactHovered] = useState(false);
   const [hoveredContact, setHoveredContact] = useState<string | null>(null);
-  const [idleContactIndex, setIdleContactIndex] = useState(0);
-
-  // Scoped inside FloatingDocks so the 2.4s highlight never re-renders the 820-node canvas
-  useEffect(() => {
-    if (isContactHovered) return;
-    const interval = setInterval(() => {
-      setIdleContactIndex((prev) => (prev + 1) % CONTACT_ITEMS.length);
-    }, 2400);
-    return () => clearInterval(interval);
-  }, [isContactHovered]);
 
   return (
     <>
@@ -144,10 +134,8 @@ export const FloatingDocks = memo(function FloatingDocks({
             isContactHovered ? "w-[180px] items-stretch" : "w-[56px]"
           }`}
         >
-          {CONTACT_ITEMS.map((item, index) => {
-            const isItemHovered = hoveredContact === item.id;
-            const isAutoActive = !isContactHovered && idleContactIndex === index;
-            const isActive = isItemHovered || isAutoActive;
+          {CONTACT_ITEMS.map((item) => {
+            const isActive = hoveredContact === item.id;
 
             return (
               <a
@@ -163,14 +151,14 @@ export const FloatingDocks = memo(function FloatingDocks({
                   isContactHovered ? "w-full px-2.5 gap-2.5 justify-start" : "w-9 justify-center"
                 } ${
                   isActive
-                    ? "text-white shadow-[2px_2px_0px_#000] border-2 border-black font-bold scale-[1.05]"
+                    ? "text-white shadow-[2px_2px_0px_#000] border-2 border-black font-bold"
                     : "text-[#1A1A1A] hover:bg-black/10 border-2 border-transparent font-medium"
                 }`}
                 style={{
                   backgroundColor: isActive ? item.activeColor : undefined,
                 }}
               >
-                <span className="flex-shrink-0 flex items-center justify-center transition-transform">
+                <span className="flex-shrink-0 flex items-center justify-center">
                   {getContactIcon(item.id)}
                 </span>
                 {isContactHovered && (
