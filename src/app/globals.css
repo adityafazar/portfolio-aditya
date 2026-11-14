@@ -611,3 +611,24 @@ body {
     will-change: auto !important;
   }
 }
+
+/* Preloader optical blur animation */
+@keyframes opticalBreath {
+  0%, 100% {
+    filter: blur(4.5px);
+  }
+  50% {
+    filter: blur(6.5px);
+  }
+}
+
+.preloader-optical-word {
+  filter: blur(5px);
+  animation: opticalBreath 2.4s ease-in-out infinite;
+  transition: filter 0.35s ease;
+}
+
+.preloader-optical-word.is-ready {
+  animation: none;
+  filter: blur(0px);
+}
