@@ -22,23 +22,6 @@ const CHAR_ITEMS = [
   { ch: ".", color: PALETTE[0], isDot: true, dotIndex: 1 },
 ] as const;
 
-const WELCOME_ITEMS = [
-  { ch: "S", color: PALETTE[0], isSpace: false },
-  { ch: "E", color: PALETTE[1], isSpace: false },
-  { ch: "L", color: PALETTE[2], isSpace: false },
-  { ch: "A", color: PALETTE[3], isSpace: false },
-  { ch: "M", color: PALETTE[0], isSpace: false },
-  { ch: "A", color: PALETTE[1], isSpace: false },
-  { ch: "T", color: PALETTE[3], isSpace: false },
-  { ch: " ", color: "transparent", isSpace: true },
-  { ch: "D", color: PALETTE[0], isSpace: false },
-  { ch: "A", color: PALETTE[1], isSpace: false },
-  { ch: "T", color: PALETTE[2], isSpace: false },
-  { ch: "A", color: PALETTE[3], isSpace: false },
-  { ch: "N", color: PALETTE[0], isSpace: false },
-  { ch: "G", color: PALETTE[1], isSpace: false },
-] as const;
-
 const GUIDE_ITEMS = [
   {
     num: "01",
@@ -260,33 +243,25 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         </div>
       ))}
 
-      {/* Top Telemetry Reticle (0%..100% -> 100% • SELESAI) */}
+      {/* Top Telemetry Reticle (0%..100% -> 100% READY in Figma Selection Box) */}
       <div
         aria-live="polite"
-        className={`relative z-10 flex h-8 min-w-[84px] items-center justify-center gap-2 px-3.5 font-mono text-xs font-bold tracking-wider transition-all duration-200 sm:h-9 sm:min-w-[96px] sm:px-4 sm:text-[13px] ${
-          isReady
-            ? "rounded-lg border-2 border-black bg-[#2C8B57] text-white shadow-[3px_3px_0px_#000]"
-            : "border-[1.5px] border-[#0D99FF] bg-[#FFFDF8] text-[#1A1A1A]"
-        }`}
+        className="relative z-10 flex h-8 min-w-[96px] items-center justify-center gap-2 border-[1.5px] border-[#0D99FF] bg-[#FFFDF8] px-3.5 font-mono text-xs font-bold tracking-wider text-[#1A1A1A] transition-colors duration-200 sm:h-9 sm:min-w-[112px] sm:px-4 sm:text-[13px]"
       >
-        {isReady ? (
-          <span className="h-2 w-2 rounded-full bg-[#A7F3D0]" />
-        ) : (
-          <>
-            <span className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
-            <span className="absolute -right-[3px] -top-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
-            <span className="absolute -bottom-[3px] -left-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
-            <span className="absolute -bottom-[3px] -right-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
-            <span
-              className="h-2 w-2 rounded-full transition-colors duration-200"
-              style={{ backgroundColor: PALETTE[zoneIndex] }}
-            />
-          </>
-        )}
-        <span>{isReady ? "100% • SELESAI" : `${progress}%`}</span>
+        <span className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
+        <span className="absolute -right-[3px] -top-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
+        <span className="absolute -bottom-[3px] -left-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
+        <span className="absolute -bottom-[3px] -right-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
+        <span
+          className="h-2 w-2 rounded-full transition-colors duration-200"
+          style={{
+            backgroundColor: isReady ? "#2C8B57" : PALETTE[zoneIndex],
+          }}
+        />
+        <span>{isReady ? "100% READY" : `${progress}%`}</span>
       </div>
 
-      {/* Center Focal Stack: Optical-Blur LOADING.. -> Crisp SELAMAT DATANG + Proportional Opsi 7 Guide */}
+      {/* Center Focal Stack: Optical-Blur LOADING.. -> Figma Frame SELAMAT DATANG + Guide Box + Anchored CTA */}
       <div className="relative z-10 flex w-full max-w-[340px] flex-col items-center sm:max-w-[500px] md:max-w-[550px]">
         {!isReady ? (
           <div
@@ -309,23 +284,17 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
             })}
           </div>
         ) : (
-          <div
-            aria-hidden="true"
-            className="preloader-optical-word is-ready preloader-cta-pop inline-flex items-baseline whitespace-nowrap text-[29px] font-black leading-[0.95] tracking-[0.03em] sm:text-[46px] md:text-[58px] lg:text-[72px]"
-          >
-            {WELCOME_ITEMS.map((item, idx) =>
-              item.isSpace ? (
-                <span key={idx} className="inline-block w-[0.3em]" />
-              ) : (
-                <span
-                  key={idx}
-                  className="inline-block"
-                  style={{ color: item.color }}
-                >
-                  {item.ch}
-                </span>
-              )
-            )}
+          <div className="preloader-cta-pop relative border-[1.5px] border-[#0D99FF] bg-[#FFFDF8]/70 px-5 py-3 sm:px-8 sm:py-4">
+            <span className="absolute -top-5 left-0 bg-[#0D99FF] px-2 py-0.5 font-mono text-[10px] font-bold tracking-wide text-white sm:-top-6 sm:text-[11px]">
+              ✓ Frame Ready
+            </span>
+            <span className="absolute -left-[4px] -top-[4px] h-2 w-2 border-[1.5px] border-[#0D99FF] bg-white" />
+            <span className="absolute -right-[4px] -top-[4px] h-2 w-2 border-[1.5px] border-[#0D99FF] bg-white" />
+            <span className="absolute -bottom-[4px] -left-[4px] h-2 w-2 border-[1.5px] border-[#0D99FF] bg-white" />
+            <span className="absolute -bottom-[4px] -right-[4px] h-2 w-2 border-[1.5px] border-[#0D99FF] bg-white" />
+            <div className="whitespace-nowrap text-[26px] font-black leading-none tracking-[0.02em] text-[#1A1A1A] sm:text-[40px] md:text-[46px]">
+              SELAMAT <span className="text-[#4565D6]">DATANG</span>
+            </div>
           </div>
         )}
 
@@ -354,11 +323,36 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
             ))}
           </ol>
         </div>
+
+        {/* Full-width anchored Lanjutkan button (Opsi B) */}
+        {isReady && (
+          <button
+            type="button"
+            onClick={handleEnter}
+            className="preloader-cta-pop mt-4 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl border-2 border-black bg-[#4565D6] px-6 py-3.5 text-[15px] font-black tracking-wide text-white shadow-[4px_4px_0px_#000] transition-all hover:-translate-y-0.5 hover:bg-[#3A57C2] hover:shadow-[5px_5px_0px_#000] active:translate-y-0.5 active:shadow-[2px_2px_0px_#000] sm:py-4 sm:text-base"
+          >
+            <span>Lanjutkan</span>
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+          </button>
+        )}
       </div>
 
-      {/* Bottom Action Slot: 4-Color 20-Segment Progress Track -> Highlighted "Lanjutkan" CTA */}
-      <div className="relative z-10 flex min-h-[104px] items-center justify-center">
-        {!isReady ? (
+      {/* Bottom Action Slot: 4-Color 20-Segment Progress Track while loading */}
+      <div className="relative z-10 flex h-12 items-center justify-center">
+        {!isReady && (
           <div
             aria-hidden="true"
             className="flex items-center gap-1 rounded-[10px] border-2 border-black bg-[#FFFDF8] px-2.5 py-2 shadow-[4px_4px_0px_#000]"
@@ -375,45 +369,6 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
                 }}
               />
             ))}
-          </div>
-        ) : (
-          <div className="preloader-cta-pop flex flex-col items-center gap-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#2C8B57]/35 bg-[#E6F4EC] px-3 py-1 text-[11px] font-extrabold tracking-wide text-[#1E6F43] sm:text-xs">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-[#2C8B57]" />
-              <span>Loading selesai — klik untuk masuk</span>
-            </div>
-
-            <div className="relative inline-flex items-center justify-center">
-              <span
-                aria-hidden="true"
-                className="preloader-cta-ring pointer-events-none absolute inset-0 rounded-2xl border-2 border-[#4565D6] bg-[#4565D6]/20"
-              />
-              <button
-                type="button"
-                onClick={handleEnter}
-                className="relative inline-flex cursor-pointer items-center gap-3 rounded-2xl border-[2.5px] border-black bg-[#4565D6] px-9 py-3.5 text-[15px] font-black tracking-wide text-white shadow-[6px_6px_0px_#000,0_0_24px_rgba(69,101,214,0.38)] transition-all hover:-translate-y-0.5 hover:bg-[#3A57C2] hover:shadow-[7px_7px_0px_#000,0_0_28px_rgba(69,101,214,0.5)] active:translate-y-0.5 active:shadow-[2px_2px_0px_#000] sm:px-12 sm:py-4 sm:text-[17px]"
-              >
-                <span>Lanjutkan</span>
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                  className="preloader-cta-arrow"
-                >
-                  <path d="M5 12h14" />
-                  <path d="m13 6 6 6-6 6" />
-                </svg>
-                <span className="hidden items-center rounded-md border border-white/35 bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-bold sm:inline-flex">
-                  Enter ↵
-                </span>
-              </button>
-            </div>
           </div>
         )}
       </div>
