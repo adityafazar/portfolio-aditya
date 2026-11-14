@@ -203,7 +203,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
       aria-modal="true"
       aria-label="Memuat portofolio"
       aria-hidden={isExiting}
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-between overflow-hidden bg-[#EDE8E0] px-6 py-7 select-none touch-none transition-opacity duration-500 sm:px-12 sm:py-10 ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center overflow-y-auto bg-[#EDE8E0] px-6 pt-7 pb-9 select-none touch-pan-y transition-opacity duration-500 sm:px-12 sm:pt-10 sm:pb-12 ${
         isExiting ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
       style={{
@@ -214,11 +214,18 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         backgroundSize: "56px 56px",
       }}
     >
-      {/* Top spacer to keep center stack balanced vertically */}
-      <div aria-hidden="true" className="h-8 sm:h-9" />
+      {/* Flexible top space pushes the entire block slightly down toward the CTA */}
+      <div aria-hidden="true" className="w-full flex-1 min-h-4" />
 
-      {/* Center Focal Stack: Optical-Blur LOADING.. -> 4-Color SELAMAT DATANG + Proportional Opsi 7 Guide */}
+      {/* Center Focal Stack: Percentage + LOADING.. / SELAMAT DATANG + Guide Card */}
       <div className="relative z-10 flex w-full max-w-[340px] flex-col items-center sm:max-w-[500px] md:max-w-[550px]">
+        <div
+          aria-live="polite"
+          className="mb-3 font-mono text-2xl font-black tabular-nums leading-none tracking-tight text-[#1A1A1A] sm:mb-4 sm:text-3xl md:text-4xl"
+        >
+          {progress}%
+        </div>
+
         {!isReady ? (
           <div
             aria-hidden="true"
@@ -261,7 +268,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         )}
 
         {/* Proportional Opsi 7 Guide Box */}
-        <div className="mt-6 w-full rounded-xl border-2 border-black bg-[#FFFDF8]/95 px-4 py-3 shadow-[4px_4px_0px_#000] sm:mt-8 sm:px-5 sm:py-3.5">
+        <div className="mt-5 w-full rounded-xl border-2 border-black bg-[#FFFDF8]/95 px-4 py-3 shadow-[4px_4px_0px_#000] sm:mt-7 sm:px-5 sm:py-3.5">
           <div className="border-b border-black/15 pb-2 text-xs font-black tracking-tight text-[#1A1A1A] sm:text-sm">
             Kontrol Kanvas Portofolio
           </div>
@@ -288,7 +295,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
       </div>
 
       {/* Bottom Action Slot: 4-Color 20-Segment Progress Track -> Highlighted "Lanjutkan" CTA */}
-      <div className="relative z-10 flex min-h-[76px] items-center justify-center">
+      <div className="relative z-10 mt-7 flex min-h-[76px] items-center justify-center sm:mt-9">
         {!isReady ? (
           <div
             aria-hidden="true"
