@@ -102,17 +102,9 @@ export const CONTACT_ITEMS: ContactItem[] = [
   {
     id: "ig-personal",
     label: "@adityaafazar",
-    desc: "Instagram Personal (@adityaafazar)",
+    desc: "Instagram (@adityaafazar)",
     href: "https://www.instagram.com/adityaafazar/?hl=en",
     activeColor: "#E1306C",
-    isExternal: true,
-  },
-  {
-    id: "ig-design",
-    label: "@fazar_desain",
-    desc: "Instagram 3D & Design (@fazar_desain)",
-    href: "https://www.instagram.com/fazar_desain/?hl=en",
-    activeColor: "#C13584",
     isExternal: true,
   },
   {

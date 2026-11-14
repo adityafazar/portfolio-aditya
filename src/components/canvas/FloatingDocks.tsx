@@ -7,45 +7,42 @@ function getSectionIcon(id: string): React.ReactNode {
   switch (id) {
     case "hero":
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <polyline points="9 22 9 12 15 12 15 22" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2.8 3 10v10a1 1 0 0 0 1 1h5.5v-6.5h5V21H20a1 1 0 0 0 1-1V10l-9-7.2Z" />
         </svg>
       );
     case "bio":
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-          <circle cx="12" cy="7" r="4" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 3.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-7 15c0-3.1 3.1-5 7-5s7 1.9 7 5v1.5H5v-1.5Z" />
         </svg>
       );
     case "edu":
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m21.42 10.922-8.5-4.5a2 2 0 0 0-1.84 0l-8.5 4.5a1 1 0 0 0 0 1.76l8.5 4.5a2 2 0 0 0 1.84 0l8.5-4.5a1 1 0 0 0 0-1.76Z" />
-          <path d="M6 13v5c0 1.5 2.5 3 6 3s6-1.5 6-3v-5" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2.8 21 7.2 12 11.6 3 7.2l9-4.4Zm-8.2 8 8.2 4 8.2-4 1.3 1.9-9.5 4.7-9.5-4.7 1.3-1.9Zm0 4.6 8.2 4 8.2-4 1.3 1.9-9.5 4.7-9.5-4.7 1.3-1.9Z" />
         </svg>
       );
     case "exp":
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <rect width="20" height="14" x="2" y="7" rx="2" />
-          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M9 3a2 2 0 0 0-2 2v1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V5a2 2 0 0 0-2-2H9Zm0 3h6V5H9v1Zm1.5 5.5a1 1 0 0 0-1 1v1h5v-1a1 1 0 0 0-1-1h-3Z"
+          />
         </svg>
       );
     case "uiux":
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <rect width="14" height="20" x="5" y="2" rx="2" />
-          <path d="M12 18h.01" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M3 4.5A1.5 1.5 0 0 1 4.5 3H11v8.5H3v-7Zm10-1.5h6.5A1.5 1.5 0 0 1 21 4.5v4h-8V3Zm0 7.5h8v9a1.5 1.5 0 0 1-1.5 1.5H13v-10.5ZM3 13.5h8V21H4.5A1.5 1.5 0 0 1 3 19.5v-6Z" />
         </svg>
       );
     default:
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m21 16-9 5-9-5V8l9-5 9 5v8Z" />
-          <path d="m3 8 9 5 9-5" />
-          <path d="M12 13v8" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2.2 3.5 7v10L12 21.8l8.5-4.8V7L12 2.2Zm0 2.3 5.9 3.3L12 11.1 6.1 7.8 12 4.5Zm-6.5 5 5.5 3.1v6.4l-5.5-3.1V9.5Zm7.5 9.5v-6.4l5.5-3.1v6.4L13 19Z" />
         </svg>
       );
   }
@@ -55,32 +52,42 @@ function getContactIcon(id: string): React.ReactNode {
   switch (id) {
     case "email":
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <rect width="20" height="16" x="2" y="4" rx="2" />
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M4 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4Zm1.5 2.4L12 12.1l6.5-4.7H5.5Zm-1.5 2v7.6h16V9.4l-7.4 5.3a1 1 0 0 1-1.2 0L4 9.4Z"
+          />
         </svg>
       );
     case "ig-personal":
-    case "ig-design":
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-          <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M7 2a5 5 0 0 0-5 5v10a5 5 0 0 0 5 5h10a5 5 0 0 0 5-5V7a5 5 0 0 0-5-5H7Zm5 5.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Zm0 2.2a2.3 2.3 0 1 0 0 4.6 2.3 2.3 0 0 0 0-4.6Zm5.3-3.7a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Z"
+          />
         </svg>
       );
     case "linkedin":
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-          <rect width="4" height="12" x="2" y="9" />
-          <circle cx="4" cy="4" r="2" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5Zm3.3 4.8a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0ZM5.7 10.2h2.4v7.8H5.7v-7.8Zm4.4 0h2.3v1.1h.1c.3-.6 1.2-1.3 2.5-1.3 2.6 0 3.1 1.7 3.1 3.9V18h-2.4v-3.6c0-.9 0-2-1.2-2s-1.4 1-1.4 1.9V18h-2.4v-7.8Z"
+          />
         </svg>
       );
     default:
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M12 2.5a9.3 9.3 0 0 0-8.1 13.8L2.8 21l4.9-1.3A9.3 9.3 0 1 0 12 2.5Zm-3.1 5.4c.2-.4.4-.4.7-.4h.6c.2 0 .4.1.5.4l.7 1.7c.1.2.1.5-.1.7l-.5.6c-.1.1-.1.3 0 .5.4.8 1.2 1.6 2 2 .2.1.4.1.5 0l.7-.6c.2-.2.5-.2.7-.1l1.7.8c.3.1.4.3.4.5 0 .7-.4 1.5-1.2 1.8-.9.3-2.3.1-3.9-.8-1.6-.9-2.8-2.3-3.4-3.7-.5-1.1-.4-2.2.6-3Z"
+          />
         </svg>
       );
   }
