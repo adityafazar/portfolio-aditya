@@ -7,7 +7,6 @@ interface PortfolioPreloaderProps {
 }
 
 const SEGMENT_COUNT = 20;
-const RULER_TICKS = 25;
 const PALETTE = ["#4565D6", "#E8793A", "#D99B1E", "#2C8B57"] as const;
 
 const CHAR_ITEMS = [
@@ -196,12 +195,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
 
   if (shouldUnmount) return null;
 
-  const zoneIndex = Math.min(
-    PALETTE.length - 1,
-    Math.floor((progress / 100) * PALETTE.length)
-  );
   const filledSegments = Math.round((progress / 100) * SEGMENT_COUNT);
-  const litTicks = Math.round((progress / 100) * RULER_TICKS);
 
   return (
     <div
@@ -220,61 +214,8 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         backgroundSize: "56px 56px",
       }}
     >
-      {/* Side Vertical Drafting Rulers */}
-      {(["left", "right"] as const).map((side) => (
-        <div
-          key={side}
-          aria-hidden="true"
-          className={`pointer-events-none absolute top-1/2 hidden -translate-y-1/2 flex-col gap-2 sm:flex ${
-            side === "left"
-              ? "left-6 items-start md:left-12"
-              : "right-6 items-end md:right-12"
-          }`}
-        >
-          {Array.from({ length: RULER_TICKS }).map((_, idx) => {
-            const isMajor = idx % 4 === 0 || idx === RULER_TICKS - 1;
-            const isLit = idx < litTicks;
-            return (
-              <div
-                key={idx}
-                className="h-[2px] rounded-[1px] transition-colors duration-200"
-                style={{
-                  width: isMajor ? 20 : 10,
-                  backgroundColor: isLit
-                    ? getZoneColor(idx, RULER_TICKS)
-                    : isMajor
-                      ? "rgba(26, 26, 26, 0.55)"
-                      : "rgba(26, 26, 26, 0.24)",
-                }}
-              />
-            );
-          })}
-        </div>
-      ))}
-
-      {/* Top Telemetry Reticle (0%..100% -> 100% • SELESAI) */}
-      <div
-        aria-live="polite"
-        className={`relative z-10 flex h-8 min-w-[84px] items-center justify-center gap-2 px-3.5 font-mono text-xs font-bold tracking-wider transition-all duration-200 sm:h-9 sm:min-w-[96px] sm:px-4 sm:text-[13px] ${
-          isReady
-            ? "rounded-lg border-2 border-black bg-[#2C8B57] text-white shadow-[3px_3px_0px_#000]"
-            : "border-[1.5px] border-[#0D99FF] bg-[#FFFDF8] text-[#1A1A1A]"
-        }`}
-      >
-        {!isReady && (
-          <>
-            <span className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
-            <span className="absolute -right-[3px] -top-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
-            <span className="absolute -bottom-[3px] -left-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
-            <span className="absolute -bottom-[3px] -right-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
-            <span
-              className="h-2 w-2 rounded-full transition-colors duration-200"
-              style={{ backgroundColor: PALETTE[zoneIndex] }}
-            />
-          </>
-        )}
-        <span>{isReady ? "100% • SELESAI" : `${progress}%`}</span>
-      </div>
+      {/* Top spacer to keep center stack balanced vertically */}
+      <div aria-hidden="true" className="h-8 sm:h-9" />
 
       {/* Center Focal Stack: Optical-Blur LOADING.. -> 4-Color SELAMAT DATANG + Proportional Opsi 7 Guide */}
       <div className="relative z-10 flex w-full max-w-[340px] flex-col items-center sm:max-w-[500px] md:max-w-[550px]">
