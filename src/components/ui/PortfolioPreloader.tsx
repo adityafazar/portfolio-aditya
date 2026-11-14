@@ -1,9 +1,10 @@
 "use client";
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 
 interface PortfolioPreloaderProps {
   canvasMounted: boolean;
+  onFinish?: () => void;
 }
 
 /**
@@ -13,12 +14,18 @@ interface PortfolioPreloaderProps {
  */
 export const PortfolioPreloader = memo(function PortfolioPreloader({
   canvasMounted,
+  onFinish,
 }: PortfolioPreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [loadedCount, setLoadedCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const [shouldUnmount, setShouldUnmount] = useState(false);
+  const onFinishRef = useRef(onFinish);
+
+  useEffect(() => {
+    onFinishRef.current = onFinish;
+  }, [onFinish]);
 
   useEffect(() => {
     if (!canvasMounted) return;
@@ -41,6 +48,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         setProgress(100);
         window.setTimeout(() => {
           setIsDone(true);
+          onFinishRef.current?.();
           window.setTimeout(() => setShouldUnmount(true), 380);
         }, 160);
       }, delay);

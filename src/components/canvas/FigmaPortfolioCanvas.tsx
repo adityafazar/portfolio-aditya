@@ -32,6 +32,7 @@ import {
   UiuxCoverCable,
   UiuxMockupCluster,
 } from "@/components/sections/ManualSceneSections";
+import { InteractiveGuidePopup } from "@/components/ui/InteractiveGuidePopup";
 import { PortfolioPreloader } from "@/components/ui/PortfolioPreloader";
 import { FigmaBrowserWindowBar } from "./FigmaBrowserWindowBar";
 import { FloatingDocks } from "./FloatingDocks";
@@ -42,9 +43,10 @@ import { VideoMockupWindow } from "./VideoMockupWindow";
 const typedScene = sceneData as unknown as FigmaScene;
 
 export default function FigmaPortfolioCanvas() {
-  const [zoomFactor, setZoomFactor] = useState<number>(0.8);
+  const [zoomFactor, setZoomFactor] = useState<number>(0.7);
   const [scale, setScale] = useState<number>(1);
   const [mounted, setMounted] = useState<boolean>(false);
+  const [showGuidePopup, setShowGuidePopup] = useState<boolean>(false);
   const [activeSection, setActiveSection] = useState<string>("hero");
   const activeSectionRef = useRef<string>("hero");
   const [lightbox, setLightbox] = useState<LightboxData | null>(null);
@@ -117,6 +119,14 @@ export default function FigmaPortfolioCanvas() {
 
   const handleCloseLightbox = useCallback(() => {
     setLightbox(null);
+  }, []);
+
+  const handlePreloaderFinish = useCallback(() => {
+    setShowGuidePopup(true);
+  }, []);
+
+  const handleCloseGuidePopup = useCallback(() => {
+    setShowGuidePopup(false);
   }, []);
 
   const scrollToSection = useCallback(
@@ -207,7 +217,10 @@ export default function FigmaPortfolioCanvas() {
       }}
     >
       {/* Initial Loading Screen */}
-      <PortfolioPreloader canvasMounted={mounted} />
+      <PortfolioPreloader
+        canvasMounted={mounted}
+        onFinish={handlePreloaderFinish}
+      />
 
       {/* Outer Responsive Height-Matched Viewport Container */}
       <div
@@ -453,6 +466,12 @@ export default function FigmaPortfolioCanvas() {
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
         onSetZoomFactor={setZoomFactor}
+      />
+
+      {/* Interactive Portfolio Onboarding Pop-up */}
+      <InteractiveGuidePopup
+        open={showGuidePopup}
+        onClose={handleCloseGuidePopup}
       />
 
       {/* High-Res Image / Video Lightbox Modal */}

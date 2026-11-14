@@ -258,15 +258,15 @@ export const FloatingDocks = memo(function FloatingDocks({
 
         <button
           type="button"
-          onClick={() => onSetZoomFactor(0.8)}
-          title="Tampilan 80% (Default)"
+          onClick={() => onSetZoomFactor(0.7)}
+          title="Tampilan 70% (Default)"
           className={`flex h-7 w-9 items-center justify-center rounded-lg text-[10px] font-extrabold transition-all ${
-            zoomFactor === 0.8
+            zoomFactor === 0.7
               ? "border-2 border-black bg-black text-white shadow-[1px_1px_0px_#000]"
               : "border-2 border-transparent text-[#1A1A1A] hover:border-black hover:bg-black/10"
           }`}
         >
-          80%
+          70%
         </button>
 
         <button
