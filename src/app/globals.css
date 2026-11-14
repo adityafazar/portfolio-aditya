@@ -632,3 +632,57 @@ body {
   animation: none;
   filter: blur(0px);
 }
+
+/* Preloader ready CTA highlight animations */
+@keyframes preloaderCtaPop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes preloaderCtaRing {
+  0% {
+    opacity: 0.72;
+    transform: scale(0.98);
+  }
+  75%,
+  100% {
+    opacity: 0;
+    transform: scale(1.16, 1.32);
+  }
+}
+
+@keyframes preloaderCtaArrow {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+.preloader-cta-pop {
+  animation: preloaderCtaPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.preloader-cta-ring {
+  animation: preloaderCtaRing 1.7s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.preloader-cta-arrow {
+  animation: preloaderCtaArrow 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader-cta-pop,
+  .preloader-cta-ring,
+  .preloader-cta-arrow {
+    animation: none;
+  }
+}

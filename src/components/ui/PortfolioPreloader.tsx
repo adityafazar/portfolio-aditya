@@ -243,15 +243,18 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         </div>
       ))}
 
-      {/* Top Telemetry Reticle (0%..100% -> READY) */}
+      {/* Top Telemetry Reticle (0%..100% -> 100% • SELESAI) */}
       <div
+        aria-live="polite"
         className={`relative z-10 flex h-8 min-w-[84px] items-center justify-center gap-2 px-3.5 font-mono text-xs font-bold tracking-wider transition-all duration-200 sm:h-9 sm:min-w-[96px] sm:px-4 sm:text-[13px] ${
           isReady
             ? "rounded-lg border-2 border-black bg-[#2C8B57] text-white shadow-[3px_3px_0px_#000]"
             : "border-[1.5px] border-[#0D99FF] bg-[#FFFDF8] text-[#1A1A1A]"
         }`}
       >
-        {!isReady && (
+        {isReady ? (
+          <span className="h-2 w-2 rounded-full bg-[#A7F3D0]" />
+        ) : (
           <>
             <span className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
             <span className="absolute -right-[3px] -top-[3px] h-1.5 w-1.5 border-[1.5px] border-[#0D99FF] bg-white" />
@@ -263,7 +266,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
             />
           </>
         )}
-        <span>{isReady ? "READY" : `${progress}%`}</span>
+        <span>{isReady ? "100% • SELESAI" : `${progress}%`}</span>
       </div>
 
       {/* Center Focal Stack: 4-Color Optical-Blur LOADING.. + Proportional Opsi 7 Guide */}
@@ -318,8 +321,8 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         </div>
       </div>
 
-      {/* Bottom Action Slot: 4-Color 20-Segment Progress Track -> Blue "Lanjutkan" CTA */}
-      <div className="relative z-10 flex h-12 items-center justify-center">
+      {/* Bottom Action Slot: 4-Color 20-Segment Progress Track -> Highlighted "Lanjutkan" CTA */}
+      <div className="relative z-10 flex min-h-[104px] items-center justify-center">
         {!isReady ? (
           <div
             aria-hidden="true"
@@ -339,13 +342,44 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
             ))}
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={handleEnter}
-            className="cursor-pointer rounded-xl border-2 border-black bg-[#4565D6] px-8 py-2.5 text-sm font-extrabold tracking-wide text-white shadow-[4px_4px_0px_#000] transition-all hover:-translate-y-0.5 hover:bg-[#3A57C2] hover:shadow-[5px_5px_0px_#000] active:translate-y-0.5 active:shadow-[2px_2px_0px_#000] sm:px-10 sm:py-3 sm:text-[15px]"
-          >
-            Lanjutkan
-          </button>
+          <div className="preloader-cta-pop flex flex-col items-center gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#2C8B57]/35 bg-[#E6F4EC] px-3 py-1 text-[11px] font-extrabold tracking-wide text-[#1E6F43] sm:text-xs">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#2C8B57]" />
+              <span>Loading selesai — klik untuk masuk</span>
+            </div>
+
+            <div className="relative inline-flex items-center justify-center">
+              <span
+                aria-hidden="true"
+                className="preloader-cta-ring pointer-events-none absolute inset-0 rounded-2xl border-2 border-[#4565D6] bg-[#4565D6]/20"
+              />
+              <button
+                type="button"
+                onClick={handleEnter}
+                className="relative inline-flex cursor-pointer items-center gap-3 rounded-2xl border-[2.5px] border-black bg-[#4565D6] px-9 py-3.5 text-[15px] font-black tracking-wide text-white shadow-[6px_6px_0px_#000,0_0_24px_rgba(69,101,214,0.38)] transition-all hover:-translate-y-0.5 hover:bg-[#3A57C2] hover:shadow-[7px_7px_0px_#000,0_0_28px_rgba(69,101,214,0.5)] active:translate-y-0.5 active:shadow-[2px_2px_0px_#000] sm:px-12 sm:py-4 sm:text-[17px]"
+              >
+                <span>Lanjutkan</span>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="preloader-cta-arrow"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+                <span className="hidden items-center rounded-md border border-white/35 bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-bold sm:inline-flex">
+                  Enter ↵
+                </span>
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
