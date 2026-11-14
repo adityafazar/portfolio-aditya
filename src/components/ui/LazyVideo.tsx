@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 
 export interface LazyVideoProps {
   src: string;
@@ -11,44 +11,55 @@ export interface LazyVideoProps {
 }
 
 /**
- * Viewport-aware video player.
- * Uses preload="metadata" initially (fetching only headers + first frame so zero 163 MB spikes),
- * switches to preload="auto" when within 400px of the viewport, and auto-plays/pauses on scroll.
+ * Viewport-aware video player with real-time buffering feedback.
+ * Defers downloading until within 600px of the viewport (`shouldLoad`),
+ * auto-plays/pauses when within 150px (`isVisible`), and displays a live
+ * buffering spinner + buffered percentage pill while downloading or stalling.
  */
 export const LazyVideo = memo(function LazyVideo({
   src,
   className = "h-full w-full object-cover select-none pointer-events-none",
   style,
   borderRadius,
-  label = "Loading video...",
+  label = "Buffering video...",
 }: LazyVideoProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isNearViewport, setIsNearViewport] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [isReady, setIsReady] = useState(false);
+  const [hasFirstFrame, setHasFirstFrame] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(true);
+  const [bufferPct, setBufferPct] = useState<number | null>(null);
+
+  const updateBufferedProgress = useCallback((video: HTMLVideoElement) => {
+    if (!video.duration || !Number.isFinite(video.duration) || video.duration <= 0) {
+      return;
+    }
+    if (video.buffered.length === 0) return;
+
+    const end = video.buffered.end(video.buffered.length - 1);
+    const pct = Math.min(100, Math.max(0, Math.round((end / video.duration) * 100)));
+    setBufferPct(pct);
+  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
-    const video = videoRef.current;
-    if (video && video.readyState >= 1) {
-      setIsReady(true);
-    }
     if (!el) return;
 
     if (typeof IntersectionObserver === "undefined") {
-      setIsNearViewport(true);
+      setShouldLoad(true);
       setIsVisible(true);
       return;
     }
 
-    const nearObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry) {
-          setIsNearViewport(entry.isIntersecting);
+    const loadObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShouldLoad(true);
+          loadObserver.disconnect();
         }
       },
-      { rootMargin: "400px 0px" }
+      { rootMargin: "600px 0px" }
     );
 
     const playObserver = new IntersectionObserver(
@@ -60,11 +71,11 @@ export const LazyVideo = memo(function LazyVideo({
       { rootMargin: "150px 0px" }
     );
 
-    nearObserver.observe(el);
+    loadObserver.observe(el);
     playObserver.observe(el);
 
     return () => {
-      nearObserver.disconnect();
+      loadObserver.disconnect();
       playObserver.disconnect();
     };
   }, []);
@@ -72,7 +83,7 @@ export const LazyVideo = memo(function LazyVideo({
   // Automatically play when visible and pause when scrolled out of view
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || !shouldLoad) return;
 
     if (isVisible) {
       const playPromise = video.play();
@@ -84,7 +95,7 @@ export const LazyVideo = memo(function LazyVideo({
     } else if (!video.paused) {
       video.pause();
     }
-  }, [isVisible, isReady]);
+  }, [isVisible, shouldLoad, hasFirstFrame]);
 
   return (
     <div
@@ -92,31 +103,68 @@ export const LazyVideo = memo(function LazyVideo({
       className="relative w-full h-full overflow-hidden bg-[#171614]"
       style={{ borderRadius }}
     >
-      {/* Subtle loading placeholder shown until video metadata / first frame is ready */}
-      {!isReady && (
+      {/* Buffering indicator shown while first frame or mid-playback chunks are downloading */}
+      {isBuffering && (
         <div
-          aria-hidden="true"
-          className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-[#191816] text-[#EDE8E0]/80 pointer-events-none select-none z-10"
+          aria-live="polite"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 bg-black/25 transition-opacity duration-200"
         >
-          <div className="h-7 w-7 rounded-full border-2 border-[#EDE8E0]/20 border-t-[#DF3E48] animate-spin" />
-          <span className="text-[11px] font-medium tracking-wide uppercase opacity-75">
-            {label}
-          </span>
+          <div className="flex items-center gap-3 rounded-xl border border-white/15 bg-black/65 px-4 py-2.5 text-[#EDE8E0] backdrop-blur-sm shadow-lg">
+            <div className="h-5 w-5 shrink-0 rounded-full border-2 border-[#EDE8E0]/25 border-t-[#DF3E48] animate-spin" />
+            <div className="flex flex-col leading-tight">
+              <span className="text-[11px] font-semibold tracking-wide uppercase">
+                {bufferPct !== null && bufferPct > 0 && bufferPct < 100
+                  ? `Buffering ${bufferPct}%`
+                  : "Buffering..."}
+              </span>
+              {label && (
+                <span className="max-w-[190px] truncate text-[10px] text-[#EDE8E0]/70">
+                  {label}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
       <video
         ref={videoRef}
-        src={src}
+        src={shouldLoad ? src : undefined}
         loop
         muted
         playsInline
-        preload={isNearViewport ? "auto" : "metadata"}
-        onLoadedMetadata={() => setIsReady(true)}
-        onLoadedData={() => setIsReady(true)}
-        onCanPlay={() => setIsReady(true)}
+        preload={shouldLoad ? "auto" : "none"}
+        onProgress={(e) => updateBufferedProgress(e.currentTarget)}
+        onLoadedData={(e) => {
+          const video = e.currentTarget;
+          if (video.readyState >= 2) setHasFirstFrame(true);
+          updateBufferedProgress(video);
+        }}
+        onWaiting={() => setIsBuffering(true)}
+        onSeeking={() => setIsBuffering(true)}
+        onCanPlay={(e) => {
+          const video = e.currentTarget;
+          setHasFirstFrame(true);
+          setIsBuffering(false);
+          updateBufferedProgress(video);
+        }}
+        onCanPlayThrough={() => {
+          setHasFirstFrame(true);
+          setIsBuffering(false);
+        }}
+        onPlaying={() => {
+          setHasFirstFrame(true);
+          setIsBuffering(false);
+        }}
+        onTimeUpdate={(e) => {
+          const video = e.currentTarget;
+          if (video.readyState >= 3 && isBuffering) {
+            setIsBuffering(false);
+          }
+        }}
+        onError={() => setIsBuffering(false)}
         className={`${className} transition-opacity duration-300 ${
-          isReady ? "opacity-100" : "opacity-0"
+          hasFirstFrame ? "opacity-100" : "opacity-0"
         }`}
         style={{
           borderRadius,

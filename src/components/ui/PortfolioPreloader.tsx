@@ -8,8 +8,8 @@ interface PortfolioPreloaderProps {
 
 /**
  * Initial loading screen aligned with the drafting-paper / Blender theme.
- * Waits for Frame 1 (Hero/Bio/Experience) images and video metadata/first frames,
- * with a fast 3.5s safety timeout so the site never stalls on initial open.
+ * Waits only for Frame 1 (Hero/Bio/Experience) images so the page opens fast,
+ * while off-screen videos display their own live buffering indicators on scroll.
  */
 export const PortfolioPreloader = memo(function PortfolioPreloader({
   canvasMounted,
@@ -25,7 +25,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
 
     const startTime = Date.now();
     const MIN_DISPLAY_MS = 350;
-    const MAX_WAIT_MS = 3500;
+    const MAX_WAIT_MS = 2500;
 
     let finished = false;
     const cleanups: Array<() => void> = [];
@@ -47,9 +47,10 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
     };
 
     const rafId = window.requestAnimationFrame(() => {
-      const heroImgs = Array.from(document.querySelectorAll("#figma-frame-1 img"));
-      const videos = Array.from(document.querySelectorAll("video"));
-      const total = heroImgs.length + videos.length;
+      const heroImgs = Array.from(
+        document.querySelectorAll("#figma-frame-1 img")
+      ) as HTMLImageElement[];
+      const total = heroImgs.length;
       setTotalCount(total);
 
       if (total === 0) {
@@ -57,19 +58,12 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         return;
       }
 
-      const failedVideos = new WeakSet<HTMLVideoElement>();
-
       const evaluateProgress = () => {
         if (finished) return;
 
         let ready = 0;
         for (const img of heroImgs) {
-          if ((img as HTMLImageElement).complete) {
-            ready += 1;
-          }
-        }
-        for (const video of videos) {
-          if (video.readyState >= 1 || Boolean(video.error) || failedVideos.has(video)) {
+          if (img.complete) {
             ready += 1;
           }
         }
@@ -84,40 +78,19 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
       };
 
       for (const img of heroImgs) {
-        const htmlImg = img as HTMLImageElement;
-        if (!htmlImg.complete) {
+        if (!img.complete) {
           const onImgDone = () => evaluateProgress();
-          htmlImg.addEventListener("load", onImgDone, { once: true });
-          htmlImg.addEventListener("error", onImgDone, { once: true });
+          img.addEventListener("load", onImgDone, { once: true });
+          img.addEventListener("error", onImgDone, { once: true });
           cleanups.push(() => {
-            htmlImg.removeEventListener("load", onImgDone);
-            htmlImg.removeEventListener("error", onImgDone);
-          });
-        }
-      }
-
-      for (const video of videos) {
-        if (video.readyState < 1) {
-          const onVidDone = () => evaluateProgress();
-          const onVidErr = () => {
-            failedVideos.add(video);
-            evaluateProgress();
-          };
-          video.addEventListener("loadedmetadata", onVidDone, { once: true });
-          video.addEventListener("loadeddata", onVidDone, { once: true });
-          video.addEventListener("canplay", onVidDone, { once: true });
-          video.addEventListener("error", onVidErr, { once: true });
-          cleanups.push(() => {
-            video.removeEventListener("loadedmetadata", onVidDone);
-            video.removeEventListener("loadeddata", onVidDone);
-            video.removeEventListener("canplay", onVidDone);
-            video.removeEventListener("error", onVidErr);
+            img.removeEventListener("load", onImgDone);
+            img.removeEventListener("error", onImgDone);
           });
         }
       }
 
       evaluateProgress();
-      const pollTimer = window.setInterval(evaluateProgress, 150);
+      const pollTimer = window.setInterval(evaluateProgress, 120);
       cleanups.push(() => window.clearInterval(pollTimer));
     });
 
@@ -172,7 +145,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
           <div className="flex items-center justify-between text-[11px] font-semibold text-[#57534E]">
             <span>
               {totalCount > 0
-                ? `Memuat aset utama (${loadedCount}/${totalCount})...`
+                ? `Memuat gambar utama (${loadedCount}/${totalCount})...`
                 : "Menyiapkan kanvas..."}
             </span>
             <span>{progress}%</span>

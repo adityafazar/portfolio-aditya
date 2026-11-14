@@ -32,7 +32,6 @@ import {
   UiuxCoverCable,
   UiuxMockupCluster,
 } from "@/components/sections/ManualSceneSections";
-import { TerrainCanvas } from "@/components/ui/TerrainCanvas";
 import { PortfolioPreloader } from "@/components/ui/PortfolioPreloader";
 import { FigmaBrowserWindowBar } from "./FigmaBrowserWindowBar";
 import { FloatingDocks } from "./FloatingDocks";
@@ -209,9 +208,6 @@ export default function FigmaPortfolioCanvas() {
     >
       {/* Initial Loading Screen */}
       <PortfolioPreloader canvasMounted={mounted} />
-
-      {/* Interactive Terrain Background */}
-      <TerrainCanvas />
 
       {/* Outer Responsive Height-Matched Viewport Container */}
       <div
