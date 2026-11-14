@@ -44,6 +44,7 @@ const typedScene = sceneData as unknown as FigmaScene;
 export default function FigmaPortfolioCanvas() {
   const [zoomFactor, setZoomFactor] = useState<number>(0.7);
   const [scale, setScale] = useState<number>(1);
+  const scaleRef = useRef<number>(1);
   const [mounted, setMounted] = useState<boolean>(false);
   const [activeSection, setActiveSection] = useState<string>("hero");
   const activeSectionRef = useRef<string>("hero");
@@ -55,7 +56,9 @@ export default function FigmaPortfolioCanvas() {
     const isMobile = vw < 768;
     const baseFitScale = Math.min(1, vw / typedScene.width);
     const effectiveZoom = isMobile ? Math.max(zoomFactor, 0.96) : zoomFactor;
-    setScale(Math.round(baseFitScale * effectiveZoom * 1000) / 1000);
+    const nextScale = Math.round(baseFitScale * effectiveZoom * 1000) / 1000;
+    scaleRef.current = nextScale;
+    setScale(nextScale);
     setMounted(true);
   }, [zoomFactor]);
 
@@ -122,11 +125,11 @@ export default function FigmaPortfolioCanvas() {
   const scrollToSection = useCallback(
     (figmaY: number) => {
       window.scrollTo({
-        top: Math.round(figmaY * scale),
+        top: Math.round(figmaY * scaleRef.current),
         behavior: "smooth",
       });
     },
-    [scale]
+    []
   );
 
   const { frame1Nodes, frame2Nodes, frame3Nodes } = useMemo(() => {
@@ -197,6 +200,7 @@ export default function FigmaPortfolioCanvas() {
 
   return (
     <main
+      data-hovered-weave={hoveredWeaveGroup ?? undefined}
       className="min-h-screen w-full bg-[#EDE8E0] flex flex-col items-center select-text overflow-x-auto relative pt-4 pb-20 md:pt-6 md:pb-28"
       style={{
         backgroundImage: `
@@ -269,7 +273,6 @@ export default function FigmaPortfolioCanvas() {
                     key={layer.id}
                     node={shiftedCursor}
                     onOpenLightbox={handleOpenLightbox}
-                    hoveredWeaveGroup={hoveredWeaveGroup}
                     onHoverWeaveGroup={setHoveredWeaveGroup}
                     onScrollToSection={scrollToSection}
                     eager
@@ -281,7 +284,6 @@ export default function FigmaPortfolioCanvas() {
                   key={layer.id}
                   node={layer}
                   onOpenLightbox={handleOpenLightbox}
-                  hoveredWeaveGroup={hoveredWeaveGroup}
                   onHoverWeaveGroup={setHoveredWeaveGroup}
                   onScrollToSection={scrollToSection}
                   eager
@@ -332,7 +334,6 @@ export default function FigmaPortfolioCanvas() {
                     key={layer.id}
                     node={shiftedCursor}
                     onOpenLightbox={handleOpenLightbox}
-                    hoveredWeaveGroup={hoveredWeaveGroup}
                     onHoverWeaveGroup={setHoveredWeaveGroup}
                     onScrollToSection={scrollToSection}
                   />
@@ -351,7 +352,6 @@ export default function FigmaPortfolioCanvas() {
                   key={layer.id}
                   node={layer}
                   onOpenLightbox={handleOpenLightbox}
-                  hoveredWeaveGroup={hoveredWeaveGroup}
                   onHoverWeaveGroup={setHoveredWeaveGroup}
                   onScrollToSection={scrollToSection}
                 />
@@ -435,7 +435,6 @@ export default function FigmaPortfolioCanvas() {
                   key={layer.id}
                   node={layer}
                   onOpenLightbox={handleOpenLightbox}
-                  hoveredWeaveGroup={hoveredWeaveGroup}
                   onHoverWeaveGroup={setHoveredWeaveGroup}
                   onScrollToSection={scrollToSection}
                 />

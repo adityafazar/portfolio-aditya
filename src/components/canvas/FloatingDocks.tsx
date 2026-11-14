@@ -130,7 +130,7 @@ export const FloatingDocks = memo(function FloatingDocks({
             setIsContactHovered(false);
             setHoveredContact(null);
           }}
-          className={`pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-2 shadow-[4px_4px_0px_#000] backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl border-2 border-black bg-[#F8F6F2] p-2 shadow-[4px_4px_0px_#000] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isContactHovered ? "w-[180px] items-stretch" : "w-[56px]"
           }`}
         >
@@ -175,7 +175,7 @@ export const FloatingDocks = memo(function FloatingDocks({
         <div
           role="toolbar"
           aria-label="Kontrol Zoom Kanvas"
-          className="pointer-events-auto flex w-[56px] flex-col items-center gap-1 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-1.5 shadow-[4px_4px_0px_#000] backdrop-blur-md"
+          className="pointer-events-auto flex w-[56px] flex-col items-center gap-1 rounded-2xl border-2 border-black bg-[#F8F6F2] p-1.5 shadow-[4px_4px_0px_#000]"
         >
           <button
             type="button"
@@ -250,7 +250,7 @@ export const FloatingDocks = memo(function FloatingDocks({
           aria-label="Navigasi bagian portfolio"
           onMouseEnter={() => setIsNavHovered(true)}
           onMouseLeave={() => setIsNavHovered(false)}
-          className={`pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-2 shadow-[4px_4px_0px_#000] backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl border-2 border-black bg-[#F8F6F2] p-2 shadow-[4px_4px_0px_#000] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isNavHovered ? "w-[180px] items-stretch" : "w-[56px]"
           }`}
         >

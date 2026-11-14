@@ -4,12 +4,6 @@ import React, { memo, useEffect, useRef, useState } from "react";
 import type { SceneNode } from "@/types/portfolio";
 import { getPositionStyle } from "./utils";
 
-const ACCENT_GLOWS = [
-  "rgba(245, 197, 24, 0.45)", // Kementerian ESDM (Yellow)
-  "rgba(12, 140, 233, 0.45)", // Urbansolv (Blue)
-  "rgba(224, 60, 68, 0.45)", // SCCIC ITB (Red)
-];
-
 export const WorkingExperienceCardsRow = memo(function WorkingExperienceCardsRow({
   node,
   renderNode,
@@ -103,7 +97,6 @@ export const WorkingExperienceCardsRow = memo(function WorkingExperienceCardsRow
       {cards.map((card, idx) => {
         const isActive = idx === activeIdx;
         const isBouncing = activeBounceIdx === idx;
-        const glowColor = ACCENT_GLOWS[idx] || "rgba(0, 0, 0, 0.25)";
 
         const translateY = isActive ? -4 : 0;
         const scale = 1.0;
@@ -132,10 +125,7 @@ export const WorkingExperienceCardsRow = memo(function WorkingExperienceCardsRow
               opacity,
               cursor: "pointer",
               transition:
-                "transform 350ms cubic-bezier(0.16, 1, 0.3, 1), filter 350ms ease, opacity 300ms ease",
-              filter: isActive
-                ? `drop-shadow(0 0 14px ${glowColor}) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08))`
-                : "none",
+                "transform 350ms cubic-bezier(0.16, 1, 0.3, 1), opacity 300ms ease",
             }}
             onMouseEnter={() => handleMouseEnterCard(idx)}
             onClick={() => handleCardClick(idx)}

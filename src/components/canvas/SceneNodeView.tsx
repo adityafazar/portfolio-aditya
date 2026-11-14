@@ -16,14 +16,12 @@ import { getFontFamily, getPositionStyle, renderStrokeOverlay } from "./utils";
 export const SceneNodeView = memo(function SceneNodeView({
   node,
   onOpenLightbox,
-  hoveredWeaveGroup,
   onHoverWeaveGroup,
   onScrollToSection,
   eager = false,
 }: {
   node: SceneNode;
   onOpenLightbox: (src: string, title?: string) => void;
-  hoveredWeaveGroup?: string | null;
   onHoverWeaveGroup?: (group: string | null) => void;
   onScrollToSection?: (targetY: number) => void;
   eager?: boolean;
@@ -77,7 +75,6 @@ export const SceneNodeView = memo(function SceneNodeView({
             key={child.id}
             node={child}
             onOpenLightbox={onOpenLightbox}
-            hoveredWeaveGroup={hoveredWeaveGroup}
             onHoverWeaveGroup={onHoverWeaveGroup}
             onScrollToSection={onScrollToSection}
             eager={eager}
@@ -509,7 +506,6 @@ export const SceneNodeView = memo(function SceneNodeView({
     <SceneNodeView
       node={childNode}
       onOpenLightbox={onOpenLightbox}
-      hoveredWeaveGroup={hoveredWeaveGroup}
       onHoverWeaveGroup={onHoverWeaveGroup}
       onScrollToSection={onScrollToSection}
       eager={eager}
@@ -540,7 +536,6 @@ export const SceneNodeView = memo(function SceneNodeView({
               key={child.id}
               node={child}
               onOpenLightbox={onOpenLightbox}
-              hoveredWeaveGroup={hoveredWeaveGroup}
               onHoverWeaveGroup={onHoverWeaveGroup}
               onScrollToSection={onScrollToSection}
               eager={eager}
@@ -791,7 +786,6 @@ export const SceneNodeView = memo(function SceneNodeView({
           key={child.id}
           node={child}
           onOpenLightbox={onOpenLightbox}
-          hoveredWeaveGroup={hoveredWeaveGroup}
           onHoverWeaveGroup={onHoverWeaveGroup}
           onScrollToSection={onScrollToSection}
           eager={eager}
@@ -961,19 +955,12 @@ export const SceneNodeView = memo(function SceneNodeView({
 
   if (node.titleBadge) {
     const isHeroSub = Boolean(node.heroSubtitle || node.id === "347:838");
-    const isWovenActive = Boolean(
-      node.weaveGroup && hoveredWeaveGroup === node.weaveGroup
-    );
 
     const animClass = isHeroSub
       ? "figma-hero-subtitle-badge"
       : node.titleRot && node.titleRot > 0
-        ? `figma-title-badge figma-title-badge-rot-pos ${
-            isWovenActive ? "figma-title-badge-active-pos" : ""
-          }`
-        : `figma-title-badge figma-title-badge-rot-neg ${
-            isWovenActive ? "figma-title-badge-active-neg" : ""
-          }`;
+        ? "figma-title-badge figma-title-badge-rot-pos"
+        : "figma-title-badge figma-title-badge-rot-neg";
 
     const isUiuxCoverBadge =
       node.id === "347:1165" ||
@@ -985,6 +972,7 @@ export const SceneNodeView = memo(function SceneNodeView({
 
     return (
       <div
+        data-weave-group={node.weaveGroup}
         style={{
           ...posStyle,
           zIndex: isUiuxCoverBadge ? 5 : is3dDesignBadge ? 60 : 30,

@@ -64,14 +64,8 @@ export function renderStrokeOverlay(
       rx = numBr;
     }
 
-    // Animate all blue dashed strokes with continuous marching ants loop like in Hero
-    const isBlueStroke = Boolean(
-      c.includes("12,140,233") ||
-        c.includes("12, 140, 233") ||
-        c.includes("0C8CE9") ||
-        c.includes("#0C8CE9")
-    );
-    const shouldAnimate = isMarchingAnts || isBlueStroke;
+    // Only opt-in marching ants strokes receive the animation class
+    const shouldAnimate = Boolean(isMarchingAnts);
 
     return React.createElement(
       "svg",

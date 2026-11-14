@@ -10,7 +10,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   background-color: #EDE8E0;
 }
 
@@ -108,16 +107,21 @@ body {
   user-select: none;
   transform-origin: center center;
   transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  will-change: transform;
 }
 
 .figma-title-badge-rot-neg:hover,
-.figma-title-badge-active-neg {
+.figma-title-badge-active-neg,
+main[data-hovered-weave="portfolio"] [data-weave-group="portfolio"] > .figma-title-badge-rot-neg,
+main[data-hovered-weave="mobileapps"] [data-weave-group="mobileapps"] > .figma-title-badge-rot-neg,
+main[data-hovered-weave="uiux"] [data-weave-group="uiux"] > .figma-title-badge-rot-neg {
   transform: rotate(-1.4deg) scale(1.025) translateY(-3px);
 }
 
 .figma-title-badge-rot-pos:hover,
-.figma-title-badge-active-pos {
+.figma-title-badge-active-pos,
+main[data-hovered-weave="portfolio"] [data-weave-group="portfolio"] > .figma-title-badge-rot-pos,
+main[data-hovered-weave="mobileapps"] [data-weave-group="mobileapps"] > .figma-title-badge-rot-pos,
+main[data-hovered-weave="uiux"] [data-weave-group="uiux"] > .figma-title-badge-rot-pos {
   transform: rotate(1.4deg) scale(1.025) translateY(-3px);
 }
 
@@ -132,7 +136,6 @@ body {
   user-select: none;
   transform-origin: center center;
   transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), filter 260ms ease;
-  will-change: transform;
 }
 
 .figma-hero-subtitle-badge:hover {
@@ -168,7 +171,7 @@ body {
 }
 
 .figma-marching-ants {
-  animation: figmaMarchingAnts 1.6s linear infinite;
+  animation: none;
 }
 
 /* 2. Blender XYZ Axis Gizmo Continuous Slow Rotation */
@@ -248,7 +251,6 @@ body {
 .figma-3d-cursor-pulse {
   transform-origin: center center;
   animation: figmaCursorPulse 3.5s ease-in-out infinite;
-  filter: drop-shadow(0 0 4px rgba(245, 40, 40, 0.35));
   will-change: transform;
   transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -366,7 +368,7 @@ body {
 }
 
 .figma-timeline-marching-ants {
-  animation: figmaTimelineMarchingAnts 1.2s linear infinite;
+  animation: none;
 }
 
 /* 4.2 Option 2: Active Timeline Beacon - Radar Pulse Ping on Yellow Node (Agu 2026 - Sekarang) */
@@ -395,7 +397,6 @@ body {
   pointer-events: none;
   background-color: rgba(224, 218, 23, 0.35);
   border: 2.5px solid rgba(224, 218, 23, 0.9);
-  box-shadow: 0 0 10px rgba(224, 218, 23, 0.6);
   transform-origin: center center;
 }
 
@@ -541,7 +542,6 @@ body {
 .figma-submarine-maneuver {
   animation: figmaSubmarineManeuver 10s cubic-bezier(0.42, 0, 0.58, 1) infinite;
   transform-origin: 48% 54%;
-  filter: drop-shadow(0 18px 28px rgba(0, 32, 65, 0.35));
   will-change: transform;
   transition: filter 0.3s ease;
 }

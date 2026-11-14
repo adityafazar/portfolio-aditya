@@ -209,7 +209,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
       aria-modal="true"
       aria-label="Memuat portofolio"
       aria-hidden={isExiting}
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-between overflow-hidden bg-[#EDE8E0] px-6 py-7 select-none touch-none transition-all duration-500 sm:px-12 sm:py-10 ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-between overflow-hidden bg-[#EDE8E0] px-6 py-7 select-none touch-none transition-opacity duration-500 sm:px-12 sm:py-10 ${
         isExiting ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
       style={{
@@ -220,14 +220,6 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         backgroundSize: "56px 56px",
       }}
     >
-      {/* Frosted glass exit curtain */}
-      <div
-        aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 bg-[#EDE8E0]/35 transition-all duration-500 ${
-          isExiting ? "backdrop-blur-[16px]" : "backdrop-blur-0"
-        }`}
-      />
-
       {/* Side Vertical Drafting Rulers */}
       {(["left", "right"] as const).map((side) => (
         <div

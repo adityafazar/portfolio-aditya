@@ -222,14 +222,10 @@ export const MacDockRow = memo(function MacDockRow({
                 transformOrigin: "center bottom",
                 transform: `scale(${scale}) translateY(${translateY}px)`,
                 transition: isUserHovering
-                  ? "transform 180ms cubic-bezier(0.2, 0.9, 0.3, 1.2), filter 180ms ease"
-                  : "transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 460ms ease",
+                  ? "transform 180ms cubic-bezier(0.2, 0.9, 0.3, 1.2)"
+                  : "transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1)",
                 willChange: "transform",
-                filter: isActive
-                  ? "drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28))"
-                  : dist === 1
-                    ? "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.14))"
-                    : "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08))",
+                filter: "drop-shadow(0 3px 6px rgba(0, 0, 0, 0.14))",
               }}
             >
               {renderNode({ ...item, x: 0, y: 0 })}
