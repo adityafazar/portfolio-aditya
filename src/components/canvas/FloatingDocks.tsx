@@ -42,7 +42,9 @@ function getSectionIcon(id: string): React.ReactNode {
     default:
       return (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2.2 3.5 7v10L12 21.8l8.5-4.8V7L12 2.2Zm0 2.3 5.9 3.3L12 11.1 6.1 7.8 12 4.5Zm-6.5 5 5.5 3.1v6.4l-5.5-3.1V9.5Zm7.5 9.5v-6.4l5.5-3.1v6.4L13 19Z" />
+          <path d="M12 2.4 20.2 7 12 11.4 3.8 7 12 2.4Z" />
+          <path d="M3 8.4 11.2 12.9v8.8L3 17.1V8.4Z" />
+          <path d="m21 8.4-8.2 4.5v8.8l8.2-4.6V8.4Z" />
         </svg>
       );
   }
@@ -53,11 +55,8 @@ function getContactIcon(id: string): React.ReactNode {
     case "email":
       return (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M4 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4Zm1.5 2.4L12 12.1l6.5-4.7H5.5Zm-1.5 2v7.6h16V9.4l-7.4 5.3a1 1 0 0 1-1.2 0L4 9.4Z"
-          />
+          <path d="M2.3 6.2A2.2 2.2 0 0 1 4.2 5h15.6a2.2 2.2 0 0 1 1.9 1.2L12 12.6 2.3 6.2Z" />
+          <path d="M2 8.2v9.6A2.2 2.2 0 0 0 4.2 20h15.6a2.2 2.2 0 0 0 2.2-2.2V8.2l-9.2 6a1.5 1.5 0 0 1-1.6 0l-9.2-6Z" />
         </svg>
       );
     case "ig-personal":
