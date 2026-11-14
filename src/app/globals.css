@@ -171,7 +171,7 @@ main[data-hovered-weave="uiux"] [data-weave-group="uiux"] > .figma-title-badge-r
 }
 
 .figma-marching-ants {
-  animation: none;
+  animation: figmaMarchingAnts 1.6s linear infinite;
 }
 
 /* 2. Blender XYZ Axis Gizmo Continuous Slow Rotation */
@@ -368,7 +368,7 @@ main[data-hovered-weave="uiux"] [data-weave-group="uiux"] > .figma-title-badge-r
 }
 
 .figma-timeline-marching-ants {
-  animation: none;
+  animation: figmaTimelineMarchingAnts 1.2s linear infinite;
 }
 
 /* 4.2 Option 2: Active Timeline Beacon - Radar Pulse Ping on Yellow Node (Agu 2026 - Sekarang) */
