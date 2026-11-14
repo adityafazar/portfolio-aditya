@@ -55,9 +55,9 @@ export const SECTIONS: SectionItem[] = [
   },
   {
     id: "edu",
-    label: "Edu & Stack",
+    label: "Edu and Tool",
     badge: "Tools",
-    desc: "Pendidikan & Tools Stack",
+    desc: "Pendidikan & Tools",
     y: 2150,
     activeColor: "#4A9460", // Hijau (Education)
   },
@@ -79,7 +79,7 @@ export const SECTIONS: SectionItem[] = [
   },
   {
     id: "3d",
-    label: "3D & AR",
+    label: "3D Design",
     badge: "8 Scene",
     desc: "Blender 3D & Interactive AR",
     y: 12444,
