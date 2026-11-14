@@ -56,7 +56,7 @@ const GUIDE_ITEMS = [
     num: "03",
     color: "#2C8B57",
     label: "Lompat Bagian:",
-    text: "Pilih ikon di sisi kiri untuk langsung ke kategori.",
+    text: "Pilih ikon di sisi kanan untuk langsung ke kategori.",
   },
 ] as const;
 

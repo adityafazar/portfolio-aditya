@@ -129,170 +129,175 @@ export const FloatingDocks = memo(function FloatingDocks({
   }, [isContactHovered]);
 
   return (
-    <div className="fixed left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-start gap-3.5 pointer-events-none">
-      {/* Sleek Vertical Contact Dock */}
-      <aside
-        aria-label="Kontak dan Media Sosial"
-        onMouseEnter={() => setIsContactHovered(true)}
-        onMouseLeave={() => {
-          setIsContactHovered(false);
-          setHoveredContact(null);
-        }}
-        className={`pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-2 shadow-[4px_4px_0px_#000] backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isContactHovered ? "w-[180px] items-stretch" : "w-[56px]"
-        }`}
-      >
-        {CONTACT_ITEMS.map((item, index) => {
-          const isItemHovered = hoveredContact === item.id;
-          const isAutoActive = !isContactHovered && idleContactIndex === index;
-          const isActive = isItemHovered || isAutoActive;
+    <>
+      {/* Left Floating Docks: Contact & Zoom */}
+      <div className="fixed left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-start gap-3.5 pointer-events-none">
+        {/* Sleek Vertical Contact Dock */}
+        <aside
+          aria-label="Kontak dan Media Sosial"
+          onMouseEnter={() => setIsContactHovered(true)}
+          onMouseLeave={() => {
+            setIsContactHovered(false);
+            setHoveredContact(null);
+          }}
+          className={`pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-2 shadow-[4px_4px_0px_#000] backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isContactHovered ? "w-[180px] items-stretch" : "w-[56px]"
+          }`}
+        >
+          {CONTACT_ITEMS.map((item, index) => {
+            const isItemHovered = hoveredContact === item.id;
+            const isAutoActive = !isContactHovered && idleContactIndex === index;
+            const isActive = isItemHovered || isAutoActive;
 
-          return (
-            <a
-              key={item.id}
-              href={item.href}
-              target={item.isExternal ? "_blank" : undefined}
-              rel={item.isExternal ? "noopener noreferrer" : undefined}
-              onMouseEnter={() => setHoveredContact(item.id)}
-              onMouseLeave={() => setHoveredContact(null)}
-              title={`${item.label} - ${item.desc}`}
-              aria-label={`${item.label} - ${item.desc}`}
-              className={`flex h-9 items-center rounded-xl transition-all ${
-                isContactHovered ? "w-full px-2.5 gap-2.5 justify-start" : "w-9 justify-center"
-              } ${
-                isActive
-                  ? "text-white shadow-[2px_2px_0px_#000] border-2 border-black font-bold scale-[1.05]"
-                  : "text-[#1A1A1A] hover:bg-black/10 border-2 border-transparent font-medium"
-              }`}
-              style={{
-                backgroundColor: isActive ? item.activeColor : undefined,
-              }}
-            >
-              <span className="flex-shrink-0 flex items-center justify-center transition-transform">
-                {getContactIcon(item.id)}
-              </span>
-              {isContactHovered && (
-                <span className="truncate text-xs tracking-tight transition-opacity duration-200">
-                  {item.label}
+            return (
+              <a
+                key={item.id}
+                href={item.href}
+                target={item.isExternal ? "_blank" : undefined}
+                rel={item.isExternal ? "noopener noreferrer" : undefined}
+                onMouseEnter={() => setHoveredContact(item.id)}
+                onMouseLeave={() => setHoveredContact(null)}
+                title={`${item.label} - ${item.desc}`}
+                aria-label={`${item.label} - ${item.desc}`}
+                className={`flex h-9 items-center rounded-xl transition-all ${
+                  isContactHovered ? "w-full px-2.5 gap-2.5 justify-start" : "w-9 justify-center"
+                } ${
+                  isActive
+                    ? "text-white shadow-[2px_2px_0px_#000] border-2 border-black font-bold scale-[1.05]"
+                    : "text-[#1A1A1A] hover:bg-black/10 border-2 border-transparent font-medium"
+                }`}
+                style={{
+                  backgroundColor: isActive ? item.activeColor : undefined,
+                }}
+              >
+                <span className="flex-shrink-0 flex items-center justify-center transition-transform">
+                  {getContactIcon(item.id)}
                 </span>
-              )}
-            </a>
-          );
-        })}
-      </aside>
+                {isContactHovered && (
+                  <span className="truncate text-xs tracking-tight transition-opacity duration-200">
+                    {item.label}
+                  </span>
+                )}
+              </a>
+            );
+          })}
+        </aside>
 
-      {/* Sleek Vertical Section Navigation Dock */}
-      <nav
-        aria-label="Navigasi bagian portfolio"
-        onMouseEnter={() => setIsNavHovered(true)}
-        onMouseLeave={() => setIsNavHovered(false)}
-        className={`pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-2 shadow-[4px_4px_0px_#000] backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isNavHovered ? "w-[180px] items-stretch" : "w-[56px]"
-        }`}
-      >
-        {SECTIONS.map((sec) => {
-          const isActive = activeSection === sec.id;
-          return (
-            <button
-              key={sec.id}
-              type="button"
-              onClick={() => onScrollToSection(sec.y)}
-              aria-label={`${sec.label} - ${sec.desc}`}
-              className={`flex h-9 items-center rounded-xl transition-all ${
-                isNavHovered ? "w-full px-2.5 gap-2.5 justify-start" : "w-9 justify-center"
-              } ${
-                isActive
-                  ? "text-white shadow-[2px_2px_0px_#000] border-2 border-black font-bold"
-                  : "text-[#1A1A1A] hover:bg-black/10 border-2 border-transparent font-medium"
-              }`}
-              style={{
-                backgroundColor: isActive ? sec.activeColor : undefined,
-              }}
-            >
-              <span className="flex-shrink-0 flex items-center justify-center">
-                {getSectionIcon(sec.id)}
-              </span>
-              {isNavHovered && (
-                <span className="truncate text-xs tracking-tight transition-opacity duration-200">
-                  {sec.label}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Sleek Vertical Zoom Dock */}
-      <div
-        role="toolbar"
-        aria-label="Kontrol Zoom Kanvas"
-        className="pointer-events-auto flex w-[56px] flex-col items-center gap-1 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-1.5 shadow-[4px_4px_0px_#000] backdrop-blur-md"
-      >
-        <button
-          type="button"
-          onClick={onZoomIn}
-          title="Zoom In (+)"
-          aria-label="Zoom In"
-          className="flex h-8 w-9 items-center justify-center rounded-xl border-2 border-transparent text-sm font-black text-[#1A1A1A] transition-all hover:border-black hover:bg-black hover:text-white hover:shadow-[2px_2px_0px_#000]"
+        {/* Sleek Vertical Zoom Dock */}
+        <div
+          role="toolbar"
+          aria-label="Kontrol Zoom Kanvas"
+          className="pointer-events-auto flex w-[56px] flex-col items-center gap-1 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-1.5 shadow-[4px_4px_0px_#000] backdrop-blur-md"
         >
-          +
-        </button>
+          <button
+            type="button"
+            onClick={onZoomIn}
+            title="Zoom In (+)"
+            aria-label="Zoom In"
+            className="flex h-8 w-9 items-center justify-center rounded-xl border-2 border-transparent text-sm font-black text-[#1A1A1A] transition-all hover:border-black hover:bg-black hover:text-white hover:shadow-[2px_2px_0px_#000]"
+          >
+            +
+          </button>
 
-        <span className="text-[11px] font-black tabular-nums text-[#1A1A1A] py-0.5 select-none text-center">
-          {Math.round(zoomFactor * 100)}%
-        </span>
+          <span className="text-[11px] font-black tabular-nums text-[#1A1A1A] py-0.5 select-none text-center">
+            {Math.round(zoomFactor * 100)}%
+          </span>
 
-        <button
-          type="button"
-          onClick={onZoomOut}
-          title="Zoom Out (–)"
-          aria-label="Zoom Out"
-          className="flex h-8 w-9 items-center justify-center rounded-xl border-2 border-transparent text-sm font-black text-[#1A1A1A] transition-all hover:border-black hover:bg-black hover:text-white hover:shadow-[2px_2px_0px_#000]"
-        >
-          –
-        </button>
+          <button
+            type="button"
+            onClick={onZoomOut}
+            title="Zoom Out (–)"
+            aria-label="Zoom Out"
+            className="flex h-8 w-9 items-center justify-center rounded-xl border-2 border-transparent text-sm font-black text-[#1A1A1A] transition-all hover:border-black hover:bg-black hover:text-white hover:shadow-[2px_2px_0px_#000]"
+          >
+            –
+          </button>
 
-        <div className="h-[1.5px] w-6 bg-black/20 my-0.5" />
+          <div className="h-[1.5px] w-6 bg-black/20 my-0.5" />
 
-        <button
-          type="button"
-          onClick={() => onSetZoomFactor(1)}
-          title="Fit Layar (100%)"
-          className={`flex h-7 w-9 items-center justify-center rounded-lg text-[10px] font-extrabold transition-all ${
-            zoomFactor === 1
-              ? "border-2 border-black bg-black text-white shadow-[1px_1px_0px_#000]"
-              : "border-2 border-transparent text-[#1A1A1A] hover:border-black hover:bg-black/10"
-          }`}
-        >
-          Fit
-        </button>
+          <button
+            type="button"
+            onClick={() => onSetZoomFactor(1)}
+            title="Fit Layar (100%)"
+            className={`flex h-7 w-9 items-center justify-center rounded-lg text-[10px] font-extrabold transition-all ${
+              zoomFactor === 1
+                ? "border-2 border-black bg-black text-white shadow-[1px_1px_0px_#000]"
+                : "border-2 border-transparent text-[#1A1A1A] hover:border-black hover:bg-black/10"
+            }`}
+          >
+            Fit
+          </button>
 
-        <button
-          type="button"
-          onClick={() => onSetZoomFactor(0.7)}
-          title="Tampilan 70% (Default)"
-          className={`flex h-7 w-9 items-center justify-center rounded-lg text-[10px] font-extrabold transition-all ${
-            zoomFactor === 0.7
-              ? "border-2 border-black bg-black text-white shadow-[1px_1px_0px_#000]"
-              : "border-2 border-transparent text-[#1A1A1A] hover:border-black hover:bg-black/10"
-          }`}
-        >
-          70%
-        </button>
+          <button
+            type="button"
+            onClick={() => onSetZoomFactor(0.7)}
+            title="Tampilan 70% (Default)"
+            className={`flex h-7 w-9 items-center justify-center rounded-lg text-[10px] font-extrabold transition-all ${
+              zoomFactor === 0.7
+                ? "border-2 border-black bg-black text-white shadow-[1px_1px_0px_#000]"
+                : "border-2 border-transparent text-[#1A1A1A] hover:border-black hover:bg-black/10"
+            }`}
+          >
+            70%
+          </button>
 
-        <button
-          type="button"
-          onClick={() => onSetZoomFactor(0.6)}
-          title="Tampilan 60% (Overview Makro)"
-          className={`flex h-7 w-9 items-center justify-center rounded-lg text-[10px] font-extrabold transition-all ${
-            zoomFactor === 0.6
-              ? "border-2 border-black bg-black text-white shadow-[1px_1px_0px_#000]"
-              : "border-2 border-transparent text-[#1A1A1A] hover:border-black hover:bg-black/10"
-          }`}
-        >
-          60%
-        </button>
+          <button
+            type="button"
+            onClick={() => onSetZoomFactor(0.6)}
+            title="Tampilan 60% (Overview Makro)"
+            className={`flex h-7 w-9 items-center justify-center rounded-lg text-[10px] font-extrabold transition-all ${
+              zoomFactor === 0.6
+                ? "border-2 border-black bg-black text-white shadow-[1px_1px_0px_#000]"
+                : "border-2 border-transparent text-[#1A1A1A] hover:border-black hover:bg-black/10"
+            }`}
+          >
+            60%
+          </button>
+        </div>
       </div>
-    </div>
+
+      {/* Right Floating Dock: Section Navigation */}
+      <div className="fixed right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-end gap-3.5 pointer-events-none">
+        <nav
+          aria-label="Navigasi bagian portfolio"
+          onMouseEnter={() => setIsNavHovered(true)}
+          onMouseLeave={() => setIsNavHovered(false)}
+          className={`pointer-events-auto flex flex-col items-center gap-1.5 rounded-2xl border-2 border-black bg-[#F8F6F2]/95 p-2 shadow-[4px_4px_0px_#000] backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isNavHovered ? "w-[180px] items-stretch" : "w-[56px]"
+          }`}
+        >
+          {SECTIONS.map((sec) => {
+            const isActive = activeSection === sec.id;
+            return (
+              <button
+                key={sec.id}
+                type="button"
+                onClick={() => onScrollToSection(sec.y)}
+                aria-label={`${sec.label} - ${sec.desc}`}
+                className={`flex h-9 items-center rounded-xl transition-all ${
+                  isNavHovered ? "w-full px-2.5 gap-2.5 justify-start" : "w-9 justify-center"
+                } ${
+                  isActive
+                    ? "text-white shadow-[2px_2px_0px_#000] border-2 border-black font-bold"
+                    : "text-[#1A1A1A] hover:bg-black/10 border-2 border-transparent font-medium"
+                }`}
+                style={{
+                  backgroundColor: isActive ? sec.activeColor : undefined,
+                }}
+              >
+                <span className="flex-shrink-0 flex items-center justify-center">
+                  {getSectionIcon(sec.id)}
+                </span>
+                {isNavHovered && (
+                  <span className="truncate text-xs tracking-tight transition-opacity duration-200">
+                    {sec.label}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+    </>
   );
 });
