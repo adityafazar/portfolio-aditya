@@ -22,6 +22,23 @@ const CHAR_ITEMS = [
   { ch: ".", color: PALETTE[0], isDot: true, dotIndex: 1 },
 ] as const;
 
+const WELCOME_ITEMS = [
+  { ch: "S", color: PALETTE[0], isSpace: false },
+  { ch: "E", color: PALETTE[1], isSpace: false },
+  { ch: "L", color: PALETTE[2], isSpace: false },
+  { ch: "A", color: PALETTE[3], isSpace: false },
+  { ch: "M", color: PALETTE[0], isSpace: false },
+  { ch: "A", color: PALETTE[1], isSpace: false },
+  { ch: "T", color: PALETTE[3], isSpace: false },
+  { ch: " ", color: "transparent", isSpace: true },
+  { ch: "D", color: PALETTE[0], isSpace: false },
+  { ch: "A", color: PALETTE[1], isSpace: false },
+  { ch: "T", color: PALETTE[2], isSpace: false },
+  { ch: "A", color: PALETTE[3], isSpace: false },
+  { ch: "N", color: PALETTE[0], isSpace: false },
+  { ch: "G", color: PALETTE[1], isSpace: false },
+] as const;
+
 const GUIDE_ITEMS = [
   {
     num: "01",
@@ -269,30 +286,48 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         <span>{isReady ? "100% • SELESAI" : `${progress}%`}</span>
       </div>
 
-      {/* Center Focal Stack: 4-Color Optical-Blur LOADING.. + Proportional Opsi 7 Guide */}
+      {/* Center Focal Stack: Optical-Blur LOADING.. -> Crisp SELAMAT DATANG + Proportional Opsi 7 Guide */}
       <div className="relative z-10 flex w-full max-w-[340px] flex-col items-center sm:max-w-[500px] md:max-w-[550px]">
-        <div
-          aria-hidden="true"
-          className={`preloader-optical-word inline-flex items-baseline text-[46px] font-black leading-[0.95] tracking-[0.04em] sm:text-[74px] md:text-[96px] lg:text-[116px] ${
-            isReady ? "is-ready" : ""
-          }`}
-        >
-          {CHAR_ITEMS.map((item, idx) => {
-            const hideDot =
-              !isReady && item.isDot && item.dotIndex >= dotPhase;
-            return (
-              <span
-                key={idx}
-                className={`inline-block transition-opacity duration-150 ${
-                  hideDot ? "opacity-0" : "opacity-100"
-                }`}
-                style={{ color: item.color }}
-              >
-                {item.ch}
-              </span>
-            );
-          })}
-        </div>
+        {!isReady ? (
+          <div
+            aria-hidden="true"
+            className="preloader-optical-word inline-flex items-baseline text-[46px] font-black leading-[0.95] tracking-[0.04em] sm:text-[74px] md:text-[96px] lg:text-[116px]"
+          >
+            {CHAR_ITEMS.map((item, idx) => {
+              const hideDot = item.isDot && item.dotIndex >= dotPhase;
+              return (
+                <span
+                  key={idx}
+                  className={`inline-block transition-opacity duration-150 ${
+                    hideDot ? "opacity-0" : "opacity-100"
+                  }`}
+                  style={{ color: item.color }}
+                >
+                  {item.ch}
+                </span>
+              );
+            })}
+          </div>
+        ) : (
+          <div
+            aria-hidden="true"
+            className="preloader-optical-word is-ready preloader-cta-pop inline-flex items-baseline whitespace-nowrap text-[29px] font-black leading-[0.95] tracking-[0.03em] sm:text-[46px] md:text-[58px] lg:text-[72px]"
+          >
+            {WELCOME_ITEMS.map((item, idx) =>
+              item.isSpace ? (
+                <span key={idx} className="inline-block w-[0.3em]" />
+              ) : (
+                <span
+                  key={idx}
+                  className="inline-block"
+                  style={{ color: item.color }}
+                >
+                  {item.ch}
+                </span>
+              )
+            )}
+          </div>
+        )}
 
         {/* Proportional Opsi 7 Guide Box */}
         <div className="mt-6 w-full rounded-xl border-2 border-black bg-[#FFFDF8]/95 px-4 py-3 shadow-[4px_4px_0px_#000] sm:mt-8 sm:px-5 sm:py-3.5">
