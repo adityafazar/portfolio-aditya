@@ -16,8 +16,8 @@ export const TerrainCanvas = memo(function TerrainCanvas() {
     const NAME = "PORTFOLIO ADITYA FAZAR • ";
     const FONT = 'Poppins, ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif';
     const ROW_SHIFT = 3;
-    const CW = 10;
-    const CH = 14;
+    const CW = 14;
+    const CH = 18;
     const FPS = 36;
 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -57,18 +57,21 @@ export const TerrainCanvas = memo(function TerrainCanvas() {
     const s = {
       w: 0,
       h: 0,
-      t: 0,
+      t: 40000,
       px: -9999,
       py: -9999,
       active: false,
       k: 0,
       scrollY: typeof window !== "undefined" ? window.scrollY || 0 : 0,
     };
+
     let raf = 0;
     let onScreen = true;
     let clock = 0;
     let last = 0;
     let lastDraw = 0;
+    let scrollDebounceTimer: number | null = null;
+    let pointerIdleTimer: number | null = null;
 
     const draw = () => {
       const { w, h, t, scrollY } = s;
@@ -81,7 +84,6 @@ export const TerrainCanvas = memo(function TerrainCanvas() {
 
       const rows = Math.ceil(h / CH);
       const cols = Math.ceil(w / CW);
-
       const rowOffset = Math.floor(scrollY / CH);
       const ySubPixel = scrollY % CH;
 
@@ -95,7 +97,7 @@ export const TerrainCanvas = memo(function TerrainCanvas() {
           if (letter === " ") continue;
 
           const x = i * CW + CW / 2;
-          const lens = s.k * Math.max(0, 1 - Math.hypot(x - s.px, y - s.py) / 170);
+          const lens = s.k > 0 ? s.k * Math.max(0, 1 - Math.hypot(x - s.px, y - s.py) / 170) : 0;
           let v = fbm(i * 0.06, j_global * 0.09, t * 1.2e-4) + lens * 0.45;
           v = clamp((v - 0.35) * 1.9);
           if (v < 0.12) continue;
@@ -116,7 +118,7 @@ export const TerrainCanvas = memo(function TerrainCanvas() {
     const resize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = 1;
       s.w = w;
       s.h = h;
       canvas.width = Math.round(w * dpr);
@@ -126,11 +128,20 @@ export const TerrainCanvas = memo(function TerrainCanvas() {
     };
 
     const frame = (now: number) => {
-      if (!reduced && onScreen && !document.hidden) raf = requestAnimationFrame(frame);
-      s.scrollY = window.scrollY || window.pageYOffset || 0;
-      s.k += ((s.active ? 1 : 0) - s.k) * 0.08;
+      raf = 0;
+      if (reduced || !onScreen || document.hidden) return;
+
+      s.k += ((s.active ? 1 : 0) - s.k) * 0.12;
       clock += last ? Math.min(50, now - last) : 0;
       last = now;
+
+      if (!s.active && s.k <= 0.01) {
+        s.k = 0;
+        draw();
+        return;
+      }
+
+      raf = requestAnimationFrame(frame);
       if (now - lastDraw < 1000 / FPS) return;
       lastDraw = now;
       s.t = clock + 40000;
@@ -138,29 +149,61 @@ export const TerrainCanvas = memo(function TerrainCanvas() {
     };
 
     const start = () => {
-      cancelAnimationFrame(raf);
+      if (raf || reduced || !onScreen || document.hidden) return;
       last = 0;
       raf = requestAnimationFrame(frame);
     };
 
+    const stop = () => {
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+
+    // Draw once after scroll settles instead of redrawing on every scroll tick
     const onScroll = () => {
       s.scrollY = window.scrollY || window.pageYOffset || 0;
+      if (scrollDebounceTimer !== null) {
+        window.clearTimeout(scrollDebounceTimer);
+      }
+      scrollDebounceTimer = window.setTimeout(() => {
+        scrollDebounceTimer = null;
+        s.scrollY = window.scrollY || window.pageYOffset || 0;
+        draw();
+      }, 120);
     };
 
     const onPointerMove = (e: PointerEvent) => {
       s.px = e.clientX;
       s.py = e.clientY;
-      s.active = s.px >= 0 && s.py >= 0 && s.px <= s.w && s.py <= s.h;
+      const inside = s.px >= 0 && s.py >= 0 && s.px <= s.w && s.py <= s.h;
+      s.active = inside;
+      if (pointerIdleTimer !== null) {
+        window.clearTimeout(pointerIdleTimer);
+      }
+      if (inside) {
+        start();
+        pointerIdleTimer = window.setTimeout(() => {
+          pointerIdleTimer = null;
+          s.active = false;
+        }, 650);
+      }
     };
 
     const onPointerLeave = () => {
+      if (pointerIdleTimer !== null) {
+        window.clearTimeout(pointerIdleTimer);
+        pointerIdleTimer = null;
+      }
       s.active = false;
       s.px = -9999;
       s.py = -9999;
     };
 
     const onVisibilityChange = () => {
-      if (!document.hidden && onScreen) start();
+      if (document.hidden) stop();
+      else if (onScreen && (s.active || s.k > 0.01)) start();
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -171,16 +214,17 @@ export const TerrainCanvas = memo(function TerrainCanvas() {
 
     const io = new IntersectionObserver(([entry]) => {
       onScreen = entry.isIntersecting;
-      if (onScreen) start();
-      else cancelAnimationFrame(raf);
+      if (!onScreen) stop();
+      else if (s.active || s.k > 0.01) start();
     });
     io.observe(canvas);
 
     resize();
-    start();
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      if (scrollDebounceTimer !== null) window.clearTimeout(scrollDebounceTimer);
+      if (pointerIdleTimer !== null) window.clearTimeout(pointerIdleTimer);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);

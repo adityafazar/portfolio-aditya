@@ -7,14 +7,14 @@ interface PortfolioPreloaderProps {
 }
 
 /**
- * Full-asset initial loading screen aligned with the drafting-paper / Blender theme.
- * Waits until all images are loaded and all videos have buffered their initial playback frames
- * before revealing the interactive portfolio canvas (with a 12s safety fallback).
+ * Initial loading screen aligned with the drafting-paper / Blender theme.
+ * Waits for Frame 1 (Hero/Bio/Experience) images and video metadata/first frames,
+ * with a fast 3.5s safety timeout so the site never stalls on initial open.
  */
 export const PortfolioPreloader = memo(function PortfolioPreloader({
   canvasMounted,
 }: PortfolioPreloaderProps) {
-  const [progress, setProgress] = useState(5);
+  const [progress, setProgress] = useState(0);
   const [loadedCount, setLoadedCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [isDone, setIsDone] = useState(false);
@@ -24,8 +24,8 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
     if (!canvasMounted) return;
 
     const startTime = Date.now();
-    const MIN_DISPLAY_MS = 500;
-    const MAX_WAIT_MS = 12000;
+    const MIN_DISPLAY_MS = 350;
+    const MAX_WAIT_MS = 3500;
 
     let finished = false;
     const cleanups: Array<() => void> = [];
@@ -41,16 +41,15 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         setProgress(100);
         window.setTimeout(() => {
           setIsDone(true);
-          window.setTimeout(() => setShouldUnmount(true), 420);
-        }, 180);
+          window.setTimeout(() => setShouldUnmount(true), 380);
+        }, 160);
       }, delay);
     };
 
-    // Wait 1 animation frame so all canvas nodes (<img /> and <video />) are in the DOM
     const rafId = window.requestAnimationFrame(() => {
-      const imgs = Array.from(document.querySelectorAll("img"));
+      const heroImgs = Array.from(document.querySelectorAll("#figma-frame-1 img"));
       const videos = Array.from(document.querySelectorAll("video"));
-      const total = imgs.length + videos.length;
+      const total = heroImgs.length + videos.length;
       setTotalCount(total);
 
       if (total === 0) {
@@ -64,19 +63,19 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         if (finished) return;
 
         let ready = 0;
-        for (const img of imgs) {
-          if (img.complete) {
+        for (const img of heroImgs) {
+          if ((img as HTMLImageElement).complete) {
             ready += 1;
           }
         }
         for (const video of videos) {
-          if (video.readyState >= 2 || Boolean(video.error) || failedVideos.has(video)) {
+          if (video.readyState >= 1 || Boolean(video.error) || failedVideos.has(video)) {
             ready += 1;
           }
         }
 
         setLoadedCount(ready);
-        const pct = Math.min(100, Math.max(5, Math.round((ready / total) * 100)));
+        const pct = Math.min(100, Math.max(0, Math.round((ready / total) * 100)));
         setProgress(pct);
 
         if (ready >= total) {
@@ -84,29 +83,32 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         }
       };
 
-      for (const img of imgs) {
-        if (!img.complete) {
+      for (const img of heroImgs) {
+        const htmlImg = img as HTMLImageElement;
+        if (!htmlImg.complete) {
           const onImgDone = () => evaluateProgress();
-          img.addEventListener("load", onImgDone, { once: true });
-          img.addEventListener("error", onImgDone, { once: true });
+          htmlImg.addEventListener("load", onImgDone, { once: true });
+          htmlImg.addEventListener("error", onImgDone, { once: true });
           cleanups.push(() => {
-            img.removeEventListener("load", onImgDone);
-            img.removeEventListener("error", onImgDone);
+            htmlImg.removeEventListener("load", onImgDone);
+            htmlImg.removeEventListener("error", onImgDone);
           });
         }
       }
 
       for (const video of videos) {
-        if (video.readyState < 2) {
+        if (video.readyState < 1) {
           const onVidDone = () => evaluateProgress();
           const onVidErr = () => {
             failedVideos.add(video);
             evaluateProgress();
           };
+          video.addEventListener("loadedmetadata", onVidDone, { once: true });
           video.addEventListener("loadeddata", onVidDone, { once: true });
           video.addEventListener("canplay", onVidDone, { once: true });
           video.addEventListener("error", onVidErr, { once: true });
           cleanups.push(() => {
+            video.removeEventListener("loadedmetadata", onVidDone);
             video.removeEventListener("loadeddata", onVidDone);
             video.removeEventListener("canplay", onVidDone);
             video.removeEventListener("error", onVidErr);
@@ -145,7 +147,6 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
       }}
     >
       <div className="mx-4 flex w-full max-w-[350px] flex-col items-center gap-4 rounded-2xl border-[3px] border-black bg-[#FFFDF8] px-6 py-6 shadow-[8px_8px_0px_#000]">
-        {/* Animated badge + Blender icon */}
         <div className="flex items-center gap-3">
           <div className="relative flex h-11 w-11 items-center justify-center rounded-xl border-2 border-black bg-[#4565D6] shadow-[3px_3px_0px_#000]">
             <div className="h-5 w-5 rounded-full border-[2.5px] border-white/30 border-t-white animate-spin" />
@@ -171,7 +172,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
           <div className="flex items-center justify-between text-[11px] font-semibold text-[#57534E]">
             <span>
               {totalCount > 0
-                ? `Memuat gambar & video (${loadedCount}/${totalCount})...`
+                ? `Memuat aset utama (${loadedCount}/${totalCount})...`
                 : "Menyiapkan kanvas..."}
             </span>
             <span>{progress}%</span>
@@ -181,4 +182,3 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
     </div>
   );
 });
-

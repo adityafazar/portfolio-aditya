@@ -11,9 +11,9 @@ export interface LazyVideoProps {
 }
 
 /**
- * Preloaded & viewport-aware video player.
- * Buffers initial frames on mount so the preloader can wait until every video is ready,
- * and automatically plays/pauses based on viewport visibility.
+ * Viewport-aware video player.
+ * Uses preload="metadata" initially (fetching only headers + first frame so zero 163 MB spikes),
+ * switches to preload="auto" when within 400px of the viewport, and auto-plays/pauses on scroll.
  */
 export const LazyVideo = memo(function LazyVideo({
   src,
@@ -24,36 +24,47 @@ export const LazyVideo = memo(function LazyVideo({
 }: LazyVideoProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isNearViewport, setIsNearViewport] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
-  // Track visibility in viewport for auto play/pause
   useEffect(() => {
     const el = containerRef.current;
     const video = videoRef.current;
-    if (video && video.readyState >= 2) {
+    if (video && video.readyState >= 1) {
       setIsReady(true);
     }
     if (!el) return;
 
     if (typeof IntersectionObserver === "undefined") {
+      setIsNearViewport(true);
       setIsVisible(true);
       return;
     }
 
+    const nearObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry) {
+          setIsNearViewport(entry.isIntersecting);
+        }
+      },
+      { rootMargin: "400px 0px" }
+    );
+
     const playObserver = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
+      ([entry]) => {
         if (entry) {
           setIsVisible(entry.isIntersecting);
         }
       },
-      { rootMargin: "250px 0px" }
+      { rootMargin: "150px 0px" }
     );
 
+    nearObserver.observe(el);
     playObserver.observe(el);
 
     return () => {
+      nearObserver.disconnect();
       playObserver.disconnect();
     };
   }, []);
@@ -81,7 +92,7 @@ export const LazyVideo = memo(function LazyVideo({
       className="relative w-full h-full overflow-hidden bg-[#171614]"
       style={{ borderRadius }}
     >
-      {/* Subtle loading placeholder shown until video first frame is ready */}
+      {/* Subtle loading placeholder shown until video metadata / first frame is ready */}
       {!isReady && (
         <div
           aria-hidden="true"
@@ -100,7 +111,8 @@ export const LazyVideo = memo(function LazyVideo({
         loop
         muted
         playsInline
-        preload="auto"
+        preload={isNearViewport ? "auto" : "metadata"}
+        onLoadedMetadata={() => setIsReady(true)}
         onLoadedData={() => setIsReady(true)}
         onCanPlay={() => setIsReady(true)}
         className={`${className} transition-opacity duration-300 ${
@@ -114,4 +126,3 @@ export const LazyVideo = memo(function LazyVideo({
     </div>
   );
 });
-

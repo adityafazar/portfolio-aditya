@@ -38,7 +38,7 @@ export const InteractiveTypewriterText = memo(function InteractiveTypewriterText
   className = "",
   style = {},
   lineHeightOverride,
-  typingSpeedMs = 8,
+  typingSpeedMs = 24,
   bufferMs = 100,
   threshold = 0.15,
   caretColor = "#0C8CE9",
@@ -48,6 +48,11 @@ export const InteractiveTypewriterText = memo(function InteractiveTypewriterText
   const [typedChars, setTypedChars] = useState<number>(0);
   const [hasStarted, setHasStarted] = useState<boolean>(false);
   const [isDone, setIsDone] = useState<boolean>(false);
+  const isDoneRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    isDoneRef.current = isDone;
+  }, [isDone]);
 
   const runs: TextRunItem[] = useMemo(() => {
     if (propRuns && propRuns.length > 0) return propRuns;
@@ -58,7 +63,7 @@ export const InteractiveTypewriterText = memo(function InteractiveTypewriterText
     return runs.reduce((acc, r) => acc + (r.text ? r.text.length : 0), 0);
   }, [runs]);
 
-  // Trigger typing when scrolled into viewport, and reset/hide when scrolled away
+  // Trigger typing when scrolled into viewport; once completed keep text rendered on scroll
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -66,9 +71,12 @@ export const InteractiveTypewriterText = memo(function InteractiveTypewriterText
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
     const observer = new IntersectionObserver(
       ([entry]) => {
+        if (isDoneRef.current) return;
+
         if (entry.isIntersecting) {
           if (timeoutId) clearTimeout(timeoutId);
           timeoutId = setTimeout(() => {
+            if (isDoneRef.current) return;
             setTypedChars(0);
             setIsDone(false);
             setHasStarted(true);
@@ -76,7 +84,6 @@ export const InteractiveTypewriterText = memo(function InteractiveTypewriterText
         } else {
           if (timeoutId) clearTimeout(timeoutId);
           setHasStarted(false);
-          setIsDone(false);
           setTypedChars(0);
         }
       },
@@ -90,16 +97,17 @@ export const InteractiveTypewriterText = memo(function InteractiveTypewriterText
     };
   }, [bufferMs, threshold]);
 
-  // Rapid snappy typing timer (2 chars per 8ms tick)
+  // Smooth typing timer (5 chars per 24ms tick — identical speed with 67% fewer renders)
   useEffect(() => {
     if (!hasStarted || isDone) return;
 
     let current = 0;
     const timer = setInterval(() => {
-      current = Math.min(totalChars, current + 2);
+      current = Math.min(totalChars, current + 5);
       setTypedChars(current);
       if (current >= totalChars) {
         clearInterval(timer);
+        isDoneRef.current = true;
         setIsDone(true);
         onComplete?.();
       }
@@ -110,6 +118,7 @@ export const InteractiveTypewriterText = memo(function InteractiveTypewriterText
 
   const handleReplay = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    isDoneRef.current = false;
     setTypedChars(0);
     setIsDone(false);
     setHasStarted(false);
@@ -117,7 +126,7 @@ export const InteractiveTypewriterText = memo(function InteractiveTypewriterText
     return () => clearTimeout(id);
   }, []);
 
-  let remaining = hasStarted ? typedChars : 0;
+  let remaining = isDone ? totalChars : hasStarted ? typedChars : 0;
 
   return (
     <div

@@ -1,69 +1,22 @@
-export interface PortfolioProject {
-  id: string;
-  title: string;
-  category: "UI/UX" | "3D";
-  subtitle: string;
-  year: string;
-  platform?: string;
-  client?: string;
-  overview: string;
-  tools: string[];
-  toolsUsed: string[];
-  images: string[];
-  image?: string;
-  tags: string[];
-  badges: string[];
-  keyFeatures: string[];
-  windowTitle?: string;
-  demoUrl?: string;
-  videoUrl?: string;
-  hasVideo?: boolean;
-}
+import type {
+  PortfolioProject,
+  Project,
+  WorkExperienceItem,
+  Experience,
+  EducationItem,
+  Education,
+  ProfileData,
+} from "@/types/portfolio";
 
-export type Project = PortfolioProject;
-
-export interface WorkExperienceItem {
-  id: string;
-  period: string;
-  company: string;
-  role: string;
-  description: string;
-  highlights: string[];
-  accentColor?: string;
-  logo?: string;
-}
-
-export type Experience = WorkExperienceItem;
-
-export interface EducationItem {
-  id: string;
-  period: string;
-  field: string;
-  degree: string;
-  institution: string;
-  skills: string;
-  logo?: string;
-}
-
-export type Education = EducationItem;
-
-export interface ProfileData {
-  name: string;
-  nickname: string;
-  headline: string;
-  dateLabel: string;
-  bio: string;
-  location: string;
-  email: string;
-  socials: {
-    github: string;
-    linkedin: string;
-    instagram: string;
-    instagramDesign?: string;
-    whatsapp?: string;
-    behance: string;
-  };
-}
+export type {
+  PortfolioProject,
+  Project,
+  WorkExperienceItem,
+  Experience,
+  EducationItem,
+  Education,
+  ProfileData,
+};
 
 export const PERSONAL_INFO: ProfileData = {
   name: "Aditya Fazar Sanjaya",

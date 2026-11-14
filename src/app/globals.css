@@ -239,18 +239,17 @@ body {
 @keyframes figmaCursorPulse {
   0%, 100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 0px rgba(245, 40, 40, 0));
   }
   50% {
     transform: scale(1.09);
-    filter: drop-shadow(0 0 7px rgba(245, 40, 40, 0.5));
   }
 }
 
 .figma-3d-cursor-pulse {
   transform-origin: center center;
   animation: figmaCursorPulse 3.5s ease-in-out infinite;
-  will-change: transform, filter;
+  filter: drop-shadow(0 0 4px rgba(245, 40, 40, 0.35));
+  will-change: transform;
   transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -517,39 +516,45 @@ body {
 @keyframes figmaSubmarineManeuver {
   0% {
     transform: translate3d(0px, 0px, 0) rotate(0deg);
-    filter: drop-shadow(0 14px 24px rgba(0, 32, 65, 0.30));
   }
   18% {
     /* Diving into deeper trench: nose tilts down, forward surge */
     transform: translate3d(16px, 14px, 0) rotate(-2.4deg);
-    filter: drop-shadow(0 28px 42px rgba(0, 22, 52, 0.48));
   }
   40% {
     /* Leveling out at depth, cruising through underwater current */
     transform: translate3d(26px, 6px, 0) rotate(-0.6deg);
-    filter: drop-shadow(0 24px 36px rgba(0, 26, 60, 0.42));
   }
   62% {
     /* Surfacing ascent: nose tilts up, gentle buoyancy climb */
     transform: translate3d(10px, -15px, 0) rotate(3deg);
-    filter: drop-shadow(0 12px 20px rgba(0, 38, 80, 0.26));
   }
   82% {
     /* Cresting oceanic swell: eases back, trimming attitude angle */
     transform: translate3d(-10px, -6px, 0) rotate(1.2deg);
-    filter: drop-shadow(0 16px 26px rgba(0, 32, 68, 0.32));
   }
   100% {
     transform: translate3d(0px, 0px, 0) rotate(0deg);
-    filter: drop-shadow(0 14px 24px rgba(0, 32, 65, 0.30));
   }
 }
 
 .figma-submarine-maneuver {
   animation: figmaSubmarineManeuver 10s cubic-bezier(0.42, 0, 0.58, 1) infinite;
   transform-origin: 48% 54%;
-  will-change: transform, filter;
+  filter: drop-shadow(0 18px 28px rgba(0, 32, 65, 0.35));
+  will-change: transform;
   transition: filter 0.3s ease;
+}
+
+/* Defer paint of off-screen artboard frames until scrolled near */
+#figma-frame-2 {
+  content-visibility: auto;
+  contain-intrinsic-size: 1920px 7872px;
+}
+
+#figma-frame-3 {
+  content-visibility: auto;
+  contain-intrinsic-size: 1920px 10180px;
 }
 
 .figma-submarine-trigger:hover .figma-submarine-maneuver,

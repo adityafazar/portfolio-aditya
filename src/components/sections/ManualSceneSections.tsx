@@ -18,7 +18,7 @@
 import React, { memo } from "react";
 import { MockupWindowHeader } from "@/components/ui/MockupWindowHeader";
 import { InteractiveTypewriterText } from "@/components/ui/InteractiveTypewriterText";
-import { UIUX_MOCKUPS } from "./sceneAssets";
+import { UIUX_MOCKUPS } from "@/data/sceneAssets";
 
 type OpenLightbox = (src: string, title?: string) => void;
 
