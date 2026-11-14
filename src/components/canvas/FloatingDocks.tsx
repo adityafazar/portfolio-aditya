@@ -36,7 +36,12 @@ function getSectionIcon(id: string): React.ReactNode {
     case "uiux":
       return (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M3 4.5A1.5 1.5 0 0 1 4.5 3H11v8.5H3v-7Zm10-1.5h6.5A1.5 1.5 0 0 1 21 4.5v4h-8V3Zm0 7.5h8v9a1.5 1.5 0 0 1-1.5 1.5H13v-10.5ZM3 13.5h8V21H4.5A1.5 1.5 0 0 1 3 19.5v-6Z" />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M2.5 5.5A2.5 2.5 0 0 1 5 3h14a2.5 2.5 0 0 1 2.5 2.5v2.2h-19V5.5ZM5.8 6.2a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+          />
+          <path d="M2.5 9.2h5.2v11.8H5a2.5 2.5 0 0 1-2.5-2.5V9.2ZM9.2 9.2h12.3v9.3A2.5 2.5 0 0 1 19 21H9.2V9.2Z" />
         </svg>
       );
     default:
