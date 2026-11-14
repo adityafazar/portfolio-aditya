@@ -44,7 +44,7 @@ const GUIDE_ITEMS = [
     num: "01",
     color: "#4565D6",
     label: "Zoom In / Out:",
-    text: "Ubah skala kanvas lewat tombol zoom di sisi kanan.",
+    text: "Ubah skala kanvas lewat tombol zoom di sisi kiri.",
   },
   {
     num: "02",
@@ -56,7 +56,7 @@ const GUIDE_ITEMS = [
     num: "03",
     color: "#2C8B57",
     label: "Lompat Bagian:",
-    text: "Pilih ikon di sisi kanan untuk langsung ke kategori.",
+    text: "Pilih ikon di sisi kiri untuk langsung ke kategori.",
   },
 ] as const;
 

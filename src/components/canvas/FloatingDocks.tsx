@@ -129,7 +129,7 @@ export const FloatingDocks = memo(function FloatingDocks({
   }, [isContactHovered]);
 
   return (
-    <div className="fixed right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-end gap-3.5 pointer-events-none">
+    <div className="fixed left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-start gap-3.5 pointer-events-none">
       {/* Sleek Vertical Contact Dock */}
       <aside
         aria-label="Kontak dan Media Sosial"
