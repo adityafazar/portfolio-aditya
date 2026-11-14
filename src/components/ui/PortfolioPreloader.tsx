@@ -203,7 +203,7 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
       aria-modal="true"
       aria-label="Memuat portofolio"
       aria-hidden={isExiting}
-      className={`fixed inset-0 z-[100] flex flex-col items-center overflow-y-auto bg-[#EDE8E0] px-6 pt-7 pb-9 select-none touch-pan-y transition-opacity duration-500 sm:px-12 sm:pt-10 sm:pb-12 ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center overflow-y-auto bg-[#EDE8E0] px-6 py-7 select-none touch-pan-y transition-opacity duration-500 sm:px-12 sm:py-10 ${
         isExiting ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
       style={{
@@ -214,14 +214,19 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
         backgroundSize: "56px 56px",
       }}
     >
-      {/* Flexible top space pushes the entire block slightly down toward the CTA */}
-      <div aria-hidden="true" className="w-full flex-1 min-h-4" />
-
-      {/* Center Focal Stack: Percentage + LOADING.. / SELAMAT DATANG + Guide Card */}
-      <div className="relative z-10 flex w-full max-w-[340px] flex-col items-center sm:max-w-[500px] md:max-w-[550px]">
+      {/* Centered vertical & horizontal composition */}
+      <div className="relative z-10 my-auto flex w-full max-w-[340px] flex-col items-center sm:max-w-[500px] md:max-w-[550px]">
         <div
           aria-live="polite"
-          className="mb-3 font-mono text-2xl font-black tabular-nums leading-none tracking-tight text-[#1A1A1A] sm:mb-4 sm:text-3xl md:text-4xl"
+          className="mb-3 bg-clip-text font-mono text-2xl font-black tabular-nums leading-none tracking-tight text-transparent sm:mb-4 sm:text-3xl md:text-4xl"
+          style={{
+            backgroundImage:
+              "linear-gradient(90deg, #DC2626 0%, #EF4444 22%, #7C3AED 50%, #1D4ED8 75%, #0D99FF 100%)",
+            backgroundSize: "400% 100%",
+            backgroundPosition: `${progress}% 50%`,
+            transition:
+              "background-position 320ms cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
         >
           {progress}%
         </div>
@@ -292,61 +297,60 @@ export const PortfolioPreloader = memo(function PortfolioPreloader({
             ))}
           </ol>
         </div>
-      </div>
-
-      {/* Bottom Action Slot: 4-Color 20-Segment Progress Track -> Highlighted "Lanjutkan" CTA */}
-      <div className="relative z-10 mt-7 flex min-h-[76px] items-center justify-center sm:mt-9">
-        {!isReady ? (
-          <div
-            aria-hidden="true"
-            className="flex items-center gap-1 rounded-[10px] border-2 border-black bg-[#FFFDF8] px-2.5 py-2 shadow-[4px_4px_0px_#000]"
-          >
-            {Array.from({ length: SEGMENT_COUNT }).map((_, idx) => (
-              <div
-                key={idx}
-                className="h-[18px] w-[8px] rounded-[2px] transition-colors duration-150 sm:h-[22px] sm:w-[11px]"
-                style={{
-                  backgroundColor:
-                    idx < filledSegments
-                      ? getZoneColor(idx, SEGMENT_COUNT)
-                      : "#E5DFD5",
-                }}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="preloader-cta-pop relative inline-flex items-center justify-center">
-            <span
+        {/* Action Slot: 4-Color 20-Segment Progress Track -> Highlighted "Lanjutkan" CTA */}
+        <div className="mt-7 flex min-h-[76px] items-center justify-center sm:mt-8">
+          {!isReady ? (
+            <div
               aria-hidden="true"
-              className="preloader-cta-ring pointer-events-none absolute inset-0 rounded-2xl border-2 border-[#4565D6] bg-[#4565D6]/20"
-            />
-            <button
-              type="button"
-              onClick={handleEnter}
-              className="relative inline-flex cursor-pointer items-center gap-3 rounded-2xl border-[2.5px] border-black bg-[#4565D6] px-9 py-3.5 text-[15px] font-black tracking-wide text-white shadow-[6px_6px_0px_#000,0_0_24px_rgba(69,101,214,0.38)] transition-all hover:-translate-y-0.5 hover:bg-[#3A57C2] hover:shadow-[7px_7px_0px_#000,0_0_28px_rgba(69,101,214,0.5)] active:translate-y-0.5 active:shadow-[2px_2px_0px_#000] sm:px-12 sm:py-4 sm:text-[17px]"
+              className="flex items-center gap-1 rounded-[10px] border-2 border-black bg-[#FFFDF8] px-2.5 py-2 shadow-[4px_4px_0px_#000]"
             >
-              <span>Lanjutkan</span>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              {Array.from({ length: SEGMENT_COUNT }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="h-[18px] w-[8px] rounded-[2px] transition-colors duration-150 sm:h-[22px] sm:w-[11px]"
+                  style={{
+                    backgroundColor:
+                      idx < filledSegments
+                        ? getZoneColor(idx, SEGMENT_COUNT)
+                        : "#E5DFD5",
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="preloader-cta-pop relative inline-flex items-center justify-center">
+              <span
                 aria-hidden="true"
-                className="preloader-cta-arrow"
+                className="preloader-cta-ring pointer-events-none absolute inset-0 rounded-2xl border-2 border-[#4565D6] bg-[#4565D6]/20"
+              />
+              <button
+                type="button"
+                onClick={handleEnter}
+                className="relative inline-flex cursor-pointer items-center gap-3 rounded-2xl border-[2.5px] border-black bg-[#4565D6] px-9 py-3.5 text-[15px] font-black tracking-wide text-white shadow-[6px_6px_0px_#000,0_0_24px_rgba(69,101,214,0.38)] transition-all hover:-translate-y-0.5 hover:bg-[#3A57C2] hover:shadow-[7px_7px_0px_#000,0_0_28px_rgba(69,101,214,0.5)] active:translate-y-0.5 active:shadow-[2px_2px_0px_#000] sm:px-12 sm:py-4 sm:text-[17px]"
               >
-                <path d="M5 12h14" />
-                <path d="m13 6 6 6-6 6" />
-              </svg>
-              <span className="hidden items-center rounded-md border border-white/35 bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-bold sm:inline-flex">
-                Enter ↵
-              </span>
-            </button>
-          </div>
-        )}
+                <span>Lanjutkan</span>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="preloader-cta-arrow"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+                <span className="hidden items-center rounded-md border border-white/35 bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-bold sm:inline-flex">
+                  Enter ↵
+                </span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
